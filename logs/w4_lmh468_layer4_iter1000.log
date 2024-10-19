@@ -1,0 +1,261 @@
+ <class 'models.resnet.ResNet'>
+conv1 <class 'quant.quant_module.QuantizedLayer'>
+conv1.module <class 'quant.quant_module.QConv2d'>
+conv1.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+conv1.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+conv1.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+conv1.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+conv1.activation <class 'torch.nn.modules.activation.ReLU'>
+bn1 <class 'utils.fold_bn.StraightThrough'>
+relu <class 'utils.fold_bn.StraightThrough'>
+maxpool <class 'torch.nn.modules.pooling.MaxPool2d'>
+layer1 <class 'torch.nn.modules.container.Sequential'>
+layer1.0 <class 'utils.model_utils.QuantBasicBlock'>
+layer1.0.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer1.0.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer1.0.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer1.0.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer1.0.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer1.0.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.0.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer1.0.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer1.0.conv2.module <class 'quant.quant_module.QConv2d'>
+layer1.0.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer1.0.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer1.0.activation <class 'torch.nn.modules.activation.ReLU'>
+layer1.0.block_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.0.block_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer1.0.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.0.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer1.0.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.0.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer1.0.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.0.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer1.1 <class 'utils.model_utils.QuantBasicBlock'>
+layer1.1.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer1.1.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer1.1.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer1.1.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer1.1.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer1.1.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.1.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer1.1.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer1.1.conv2.module <class 'quant.quant_module.QConv2d'>
+layer1.1.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer1.1.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer1.1.activation <class 'torch.nn.modules.activation.ReLU'>
+layer1.1.block_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.1.block_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer1.1.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.1.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer1.1.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.1.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer1.1.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.1.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer2 <class 'torch.nn.modules.container.Sequential'>
+layer2.0 <class 'utils.model_utils.QuantBasicBlock'>
+layer2.0.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer2.0.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer2.0.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.0.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.0.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer2.0.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.0.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer2.0.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer2.0.conv2.module <class 'quant.quant_module.QConv2d'>
+layer2.0.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.0.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.0.downsample <class 'quant.quant_module.QuantizedLayer'>
+layer2.0.downsample.module <class 'quant.quant_module.QConv2d'>
+layer2.0.downsample.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.0.downsample.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.0.activation <class 'torch.nn.modules.activation.ReLU'>
+layer2.0.block_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.0.block_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer2.0.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.0.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer2.0.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.0.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer2.0.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.0.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer2.1 <class 'utils.model_utils.QuantBasicBlock'>
+layer2.1.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer2.1.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer2.1.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.1.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.1.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer2.1.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.1.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer2.1.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer2.1.conv2.module <class 'quant.quant_module.QConv2d'>
+layer2.1.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.1.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.1.activation <class 'torch.nn.modules.activation.ReLU'>
+layer2.1.block_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.1.block_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer2.1.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.1.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer2.1.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.1.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer2.1.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.1.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer3 <class 'torch.nn.modules.container.Sequential'>
+layer3.0 <class 'utils.model_utils.QuantBasicBlock'>
+layer3.0.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer3.0.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer3.0.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.0.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.0.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer3.0.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.0.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer3.0.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer3.0.conv2.module <class 'quant.quant_module.QConv2d'>
+layer3.0.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.0.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.0.downsample <class 'quant.quant_module.QuantizedLayer'>
+layer3.0.downsample.module <class 'quant.quant_module.QConv2d'>
+layer3.0.downsample.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.0.downsample.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.0.activation <class 'torch.nn.modules.activation.ReLU'>
+layer3.0.block_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.0.block_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer3.0.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.0.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer3.0.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.0.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer3.0.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.0.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer3.1 <class 'utils.model_utils.QuantBasicBlock'>
+layer3.1.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer3.1.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer3.1.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.1.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.1.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer3.1.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.1.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer3.1.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer3.1.conv2.module <class 'quant.quant_module.QConv2d'>
+layer3.1.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.1.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.1.activation <class 'torch.nn.modules.activation.ReLU'>
+layer3.1.block_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.1.block_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer3.1.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.1.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer3.1.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.1.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer3.1.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.1.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer4 <class 'torch.nn.modules.container.Sequential'>
+layer4.0 <class 'utils.model_utils.QuantBasicBlock'>
+layer4.0.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer4.0.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer4.0.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.0.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.0.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer4.0.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.0.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer4.0.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer4.0.conv2.module <class 'quant.quant_module.QConv2d'>
+layer4.0.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.0.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.0.downsample <class 'quant.quant_module.QuantizedLayer'>
+layer4.0.downsample.module <class 'quant.quant_module.QConv2d'>
+layer4.0.downsample.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.0.downsample.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.0.activation <class 'torch.nn.modules.activation.ReLU'>
+layer4.0.block_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.0.block_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer4.0.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.0.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer4.0.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.0.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer4.0.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.0.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer4.1 <class 'utils.model_utils.QuantBasicBlock'>
+layer4.1.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer4.1.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer4.1.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.1.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.1.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer4.1.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.1.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer4.1.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer4.1.conv2.module <class 'quant.quant_module.QConv2d'>
+layer4.1.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.1.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.1.activation <class 'torch.nn.modules.activation.ReLU'>
+layer4.1.block_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.1.block_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer4.1.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.1.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer4.1.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.1.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer4.1.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.1.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+avgpool <class 'torch.nn.modules.pooling.AdaptiveAvgPool2d'>
+fc <class 'quant.quant_module.QuantizedLayer'>
+fc.module <class 'quant.quant_module.QLinear'>
+fc.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+fc.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+Starting model calibration...
+Completed model calibration
+Starting block reconstruction...
+Iter: 0, Loss: 0.001, round_loss: 0.000, recon_loss: 0.001
+Iter: 200, Loss: 80.688, round_loss: 80.687, recon_loss: 0.001
+Iter: 400, Loss: 66.446, round_loss: 66.446, recon_loss: 0.001
+Iter: 600, Loss: 42.050, round_loss: 42.050, recon_loss: 0.001
+Iter: 800, Loss: 26.664, round_loss: 26.664, recon_loss: 0.001
+Iter: 0, Loss: 6.817, round_loss: 0.000, recon_loss: 6.817
+Iter: 200, Loss: 663.158, round_loss: 656.950, recon_loss: 6.208
+Iter: 400, Loss: 564.242, round_loss: 558.310, recon_loss: 5.931
+Iter: 600, Loss: 463.819, round_loss: 457.376, recon_loss: 6.444
+Iter: 800, Loss: 390.349, round_loss: 384.602, recon_loss: 5.747
+Iter: 0, Loss: 26.176, round_loss: 0.000, recon_loss: 26.176
+Iter: 200, Loss: 722.696, round_loss: 701.253, recon_loss: 21.442
+Iter: 400, Loss: 626.093, round_loss: 604.817, recon_loss: 21.276
+Iter: 600, Loss: 529.270, round_loss: 509.515, recon_loss: 19.755
+Iter: 800, Loss: 453.783, round_loss: 434.429, recon_loss: 19.354
+Iter: 0, Loss: 9.102, round_loss: 0.000, recon_loss: 9.102
+Iter: 200, Loss: 2189.247, round_loss: 2181.258, recon_loss: 7.989
+Iter: 400, Loss: 1845.383, round_loss: 1838.374, recon_loss: 7.009
+Iter: 600, Loss: 1439.974, round_loss: 1432.481, recon_loss: 7.493
+Iter: 800, Loss: 1172.718, round_loss: 1165.331, recon_loss: 7.388
+Iter: 0, Loss: 11.123, round_loss: 0.000, recon_loss: 11.123
+Iter: 200, Loss: 2813.417, round_loss: 2803.000, recon_loss: 10.418
+Iter: 400, Loss: 2365.336, round_loss: 2355.329, recon_loss: 10.007
+Iter: 600, Loss: 1810.879, round_loss: 1800.690, recon_loss: 10.189
+Iter: 800, Loss: 1454.962, round_loss: 1444.881, recon_loss: 10.081
+Iter: 0, Loss: 4.544, round_loss: 0.000, recon_loss: 4.544
+Iter: 200, Loss: 8732.391, round_loss: 8728.432, recon_loss: 3.959
+Iter: 400, Loss: 7294.881, round_loss: 7291.014, recon_loss: 3.867
+Iter: 600, Loss: 5335.405, round_loss: 5331.534, recon_loss: 3.871
+Iter: 800, Loss: 4164.951, round_loss: 4161.058, recon_loss: 3.893
+Iter: 0, Loss: 4.710, round_loss: 0.000, recon_loss: 4.710
+Iter: 200, Loss: 11223.634, round_loss: 11218.730, recon_loss: 4.903
+Iter: 400, Loss: 9367.033, round_loss: 9362.305, recon_loss: 4.729
+Iter: 600, Loss: 6785.180, round_loss: 6780.334, recon_loss: 4.846
+Iter: 800, Loss: 5249.513, round_loss: 5244.809, recon_loss: 4.703
+Iter: 0, Loss: 4.869, round_loss: 0.000, recon_loss: 4.869
+Iter: 200, Loss: 34929.684, round_loss: 34925.223, recon_loss: 4.462
+Iter: 400, Loss: 29138.777, round_loss: 29134.432, recon_loss: 4.345
+Iter: 600, Loss: 20978.082, round_loss: 20973.959, recon_loss: 4.124
+Iter: 800, Loss: 16168.495, round_loss: 16164.163, recon_loss: 4.332
+Iter: 0, Loss: 288.858, round_loss: 0.000, recon_loss: 288.858
+Iter: 200, Loss: 45187.355, round_loss: 44905.586, recon_loss: 281.771
+Iter: 400, Loss: 38759.266, round_loss: 38506.750, recon_loss: 252.516
+Iter: 600, Loss: 32819.734, round_loss: 32577.330, recon_loss: 242.404
+Iter: 800, Loss: 28464.115, round_loss: 28203.074, recon_loss: 261.041
+Iter: 0, Loss: 0.223, round_loss: 0.000, recon_loss: 0.223
+Iter: 200, Loss: 4868.850, round_loss: 4868.629, recon_loss: 0.221
+Iter: 400, Loss: 4042.111, round_loss: 4041.879, recon_loss: 0.232
+Iter: 600, Loss: 2636.984, round_loss: 2636.785, recon_loss: 0.199
+Iter: 800, Loss: 1792.254, round_loss: 1792.022, recon_loss: 0.232
+Completed block reconstruction
+Block reconstruction took 245.965078830719 seconds
+Starting model evaluation of W4A4 block reconstruction (low)...
+Top-1 accuracy: 67.83, Top-5 accuracy: 88.06
+Starting model evaluation of W4A6 block reconstruction (med)...
+Top-1 accuracy: 68.26, Top-5 accuracy: 88.22
+Starting model evaluation of W4A8 block reconstruction (high)...
+Top-1 accuracy: 68.22, Top-5 accuracy: 88.31

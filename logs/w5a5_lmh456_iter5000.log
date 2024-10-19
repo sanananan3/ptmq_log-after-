@@ -1,0 +1,739 @@
+ <class 'models.resnet.ResNet'>
+conv1 <class 'quant.quant_module.QuantizedLayer'>
+conv1.module <class 'quant.quant_module.QConv2d'>
+conv1.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+conv1.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+conv1.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+conv1.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+conv1.activation <class 'torch.nn.modules.activation.ReLU'>
+bn1 <class 'utils.fold_bn.StraightThrough'>
+relu <class 'utils.fold_bn.StraightThrough'>
+maxpool <class 'torch.nn.modules.pooling.MaxPool2d'>
+layer1 <class 'torch.nn.modules.container.Sequential'>
+layer1.0 <class 'utils.model_utils.QuantBasicBlock'>
+layer1.0.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer1.0.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer1.0.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer1.0.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer1.0.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer1.0.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.0.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer1.0.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer1.0.conv2.module <class 'quant.quant_module.QConv2d'>
+layer1.0.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer1.0.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer1.0.activation <class 'torch.nn.modules.activation.ReLU'>
+layer1.0.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.0.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer1.0.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.0.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer1.0.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.0.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer1.1 <class 'utils.model_utils.QuantBasicBlock'>
+layer1.1.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer1.1.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer1.1.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer1.1.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer1.1.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer1.1.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.1.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer1.1.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer1.1.conv2.module <class 'quant.quant_module.QConv2d'>
+layer1.1.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer1.1.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer1.1.activation <class 'torch.nn.modules.activation.ReLU'>
+layer1.1.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.1.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer1.1.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.1.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer1.1.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer1.1.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer2 <class 'torch.nn.modules.container.Sequential'>
+layer2.0 <class 'utils.model_utils.QuantBasicBlock'>
+layer2.0.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer2.0.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer2.0.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.0.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.0.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer2.0.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.0.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer2.0.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer2.0.conv2.module <class 'quant.quant_module.QConv2d'>
+layer2.0.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.0.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.0.downsample <class 'quant.quant_module.QuantizedLayer'>
+layer2.0.downsample.module <class 'quant.quant_module.QConv2d'>
+layer2.0.downsample.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.0.downsample.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.0.activation <class 'torch.nn.modules.activation.ReLU'>
+layer2.0.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.0.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer2.0.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.0.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer2.0.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.0.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer2.1 <class 'utils.model_utils.QuantBasicBlock'>
+layer2.1.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer2.1.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer2.1.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.1.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.1.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer2.1.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.1.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer2.1.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer2.1.conv2.module <class 'quant.quant_module.QConv2d'>
+layer2.1.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer2.1.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer2.1.activation <class 'torch.nn.modules.activation.ReLU'>
+layer2.1.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.1.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer2.1.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.1.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer2.1.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer2.1.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer3 <class 'torch.nn.modules.container.Sequential'>
+layer3.0 <class 'utils.model_utils.QuantBasicBlock'>
+layer3.0.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer3.0.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer3.0.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.0.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.0.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer3.0.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.0.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer3.0.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer3.0.conv2.module <class 'quant.quant_module.QConv2d'>
+layer3.0.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.0.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.0.downsample <class 'quant.quant_module.QuantizedLayer'>
+layer3.0.downsample.module <class 'quant.quant_module.QConv2d'>
+layer3.0.downsample.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.0.downsample.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.0.activation <class 'torch.nn.modules.activation.ReLU'>
+layer3.0.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.0.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer3.0.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.0.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer3.0.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.0.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer3.1 <class 'utils.model_utils.QuantBasicBlock'>
+layer3.1.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer3.1.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer3.1.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.1.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.1.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer3.1.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.1.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer3.1.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer3.1.conv2.module <class 'quant.quant_module.QConv2d'>
+layer3.1.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer3.1.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer3.1.activation <class 'torch.nn.modules.activation.ReLU'>
+layer3.1.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.1.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer3.1.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.1.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer3.1.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer3.1.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer4 <class 'torch.nn.modules.container.Sequential'>
+layer4.0 <class 'utils.model_utils.QuantBasicBlock'>
+layer4.0.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer4.0.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer4.0.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.0.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.0.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer4.0.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.0.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer4.0.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer4.0.conv2.module <class 'quant.quant_module.QConv2d'>
+layer4.0.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.0.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.0.downsample <class 'quant.quant_module.QuantizedLayer'>
+layer4.0.downsample.module <class 'quant.quant_module.QConv2d'>
+layer4.0.downsample.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.0.downsample.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.0.activation <class 'torch.nn.modules.activation.ReLU'>
+layer4.0.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.0.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer4.0.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.0.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer4.0.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.0.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+layer4.1 <class 'utils.model_utils.QuantBasicBlock'>
+layer4.1.conv1_relu <class 'quant.quant_module.QuantizedLayer'>
+layer4.1.conv1_relu.module <class 'quant.quant_module.QConv2d'>
+layer4.1.conv1_relu.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.1.conv1_relu.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.1.conv1_relu.activation <class 'torch.nn.modules.activation.ReLU'>
+layer4.1.conv1_relu.layer_post_act_fake_quantize <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.1.conv1_relu.layer_post_act_fake_quantize.observer <class 'quant.observer.MSEObserver'>
+layer4.1.conv2 <class 'quant.quant_module.QuantizedLayer'>
+layer4.1.conv2.module <class 'quant.quant_module.QConv2d'>
+layer4.1.conv2.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+layer4.1.conv2.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+layer4.1.activation <class 'torch.nn.modules.activation.ReLU'>
+layer4.1.block_post_act_fake_quantize_low <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.1.block_post_act_fake_quantize_low.observer <class 'quant.observer.MSEObserver'>
+layer4.1.block_post_act_fake_quantize_med <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.1.block_post_act_fake_quantize_med.observer <class 'quant.observer.MSEObserver'>
+layer4.1.block_post_act_fake_quantize_high <class 'quant.fake_quant.LSQFakeQuantize'>
+layer4.1.block_post_act_fake_quantize_high.observer <class 'quant.observer.MSEObserver'>
+avgpool <class 'torch.nn.modules.pooling.AdaptiveAvgPool2d'>
+fc <class 'quant.quant_module.QuantizedLayer'>
+fc.module <class 'quant.quant_module.QLinear'>
+fc.module.weight_fake_quant <class 'quant.fake_quant.AdaRoundFakeQuantize'>
+fc.module.weight_fake_quant.observer <class 'quant.observer.MSEObserver'>
+[AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), AdaRoundFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+)]
+[LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+  (observer): MSEObserver()
+), LSQFakeQuantize(
+  fake_quant_enabled=0, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+  (observer): MSEObserver()
+)]
+Starting model calibration...
+Completed model calibration
+Starting block reconstruction...
+QuantizedLayer(
+  (module): QConv2d(
+    3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3)
+    (weight_fake_quant): AdaRoundFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=8, ch_axis=0, quant_min=0, quant_max=255
+      (observer): MSEObserver()
+    )
+  )
+  (layer_post_act_fake_quantize): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+    (observer): MSEObserver()
+  )
+  (activation): ReLU(inplace=True)
+)
+QuantBasicBlock(
+  (conv1_relu): QuantizedLayer(
+    (module): QConv2d(
+      64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+    (activation): ReLU(inplace=True)
+    (layer_post_act_fake_quantize): LSQFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+      (observer): MSEObserver()
+    )
+  )
+  (conv2): QuantizedLayer(
+    (module): QConv2d(
+      64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (activation): ReLU(inplace=True)
+  (block_post_act_fake_quantize_low): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_med): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_high): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+    (observer): MSEObserver()
+  )
+)
+QuantBasicBlock(
+  (conv1_relu): QuantizedLayer(
+    (module): QConv2d(
+      64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+    (activation): ReLU(inplace=True)
+    (layer_post_act_fake_quantize): LSQFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+      (observer): MSEObserver()
+    )
+  )
+  (conv2): QuantizedLayer(
+    (module): QConv2d(
+      64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (activation): ReLU(inplace=True)
+  (block_post_act_fake_quantize_low): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_med): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_high): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+    (observer): MSEObserver()
+  )
+)
+QuantBasicBlock(
+  (conv1_relu): QuantizedLayer(
+    (module): QConv2d(
+      64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+    (activation): ReLU(inplace=True)
+    (layer_post_act_fake_quantize): LSQFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+      (observer): MSEObserver()
+    )
+  )
+  (conv2): QuantizedLayer(
+    (module): QConv2d(
+      128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (downsample): QuantizedLayer(
+    (module): QConv2d(
+      64, 128, kernel_size=(1, 1), stride=(2, 2)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (activation): ReLU(inplace=True)
+  (block_post_act_fake_quantize_low): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_med): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_high): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+    (observer): MSEObserver()
+  )
+)
+QuantBasicBlock(
+  (conv1_relu): QuantizedLayer(
+    (module): QConv2d(
+      128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+    (activation): ReLU(inplace=True)
+    (layer_post_act_fake_quantize): LSQFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+      (observer): MSEObserver()
+    )
+  )
+  (conv2): QuantizedLayer(
+    (module): QConv2d(
+      128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (activation): ReLU(inplace=True)
+  (block_post_act_fake_quantize_low): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_med): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_high): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+    (observer): MSEObserver()
+  )
+)
+QuantBasicBlock(
+  (conv1_relu): QuantizedLayer(
+    (module): QConv2d(
+      128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+    (activation): ReLU(inplace=True)
+    (layer_post_act_fake_quantize): LSQFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+      (observer): MSEObserver()
+    )
+  )
+  (conv2): QuantizedLayer(
+    (module): QConv2d(
+      256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (downsample): QuantizedLayer(
+    (module): QConv2d(
+      128, 256, kernel_size=(1, 1), stride=(2, 2)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (activation): ReLU(inplace=True)
+  (block_post_act_fake_quantize_low): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_med): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_high): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+    (observer): MSEObserver()
+  )
+)
+QuantBasicBlock(
+  (conv1_relu): QuantizedLayer(
+    (module): QConv2d(
+      256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+    (activation): ReLU(inplace=True)
+    (layer_post_act_fake_quantize): LSQFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+      (observer): MSEObserver()
+    )
+  )
+  (conv2): QuantizedLayer(
+    (module): QConv2d(
+      256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (activation): ReLU(inplace=True)
+  (block_post_act_fake_quantize_low): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_med): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_high): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+    (observer): MSEObserver()
+  )
+)
+QuantBasicBlock(
+  (conv1_relu): QuantizedLayer(
+    (module): QConv2d(
+      256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+    (activation): ReLU(inplace=True)
+    (layer_post_act_fake_quantize): LSQFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+      (observer): MSEObserver()
+    )
+  )
+  (conv2): QuantizedLayer(
+    (module): QConv2d(
+      512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (downsample): QuantizedLayer(
+    (module): QConv2d(
+      256, 512, kernel_size=(1, 1), stride=(2, 2)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (activation): ReLU(inplace=True)
+  (block_post_act_fake_quantize_low): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_med): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_high): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=6, ch_axis=-1, quant_min=0, quant_max=63
+    (observer): MSEObserver()
+  )
+)
+QuantBasicBlock(
+  (conv1_relu): QuantizedLayer(
+    (module): QConv2d(
+      512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+    (activation): ReLU(inplace=True)
+    (layer_post_act_fake_quantize): LSQFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+      (observer): MSEObserver()
+    )
+  )
+  (conv2): QuantizedLayer(
+    (module): QConv2d(
+      512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+      (weight_fake_quant): AdaRoundFakeQuantize(
+        fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=0, quant_min=0, quant_max=31
+        (observer): MSEObserver()
+      )
+    )
+  )
+  (activation): ReLU(inplace=True)
+  (block_post_act_fake_quantize_low): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=4, ch_axis=-1, quant_min=0, quant_max=15
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_med): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=5, ch_axis=-1, quant_min=0, quant_max=31
+    (observer): MSEObserver()
+  )
+  (block_post_act_fake_quantize_high): LSQFakeQuantize(
+    fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=8, ch_axis=-1, quant_min=0, quant_max=255
+    (observer): MSEObserver()
+  )
+)
+QuantizedLayer(
+  (module): QLinear(
+    in_features=512, out_features=1000, bias=True
+    (weight_fake_quant): AdaRoundFakeQuantize(
+      fake_quant_enabled=1, observer_enabled=0, symmetric=False, bit=8, ch_axis=0, quant_min=0, quant_max=255
+      (observer): MSEObserver()
+    )
+  )
+)
+Completed block reconstruction
+PTMQ block reconstruction took 1208.55 seconds
+layer1.0 low
+layer1.1 low
+layer2.0 low
+layer2.1 low
+layer3.0 low
+layer3.1 low
+layer4.0 low
+layer4.1 low
+Starting model evaluation of W5A4 block reconstruction (low)...
+Top-1 accuracy: 67.90, Top-5 accuracy: 88.07
+layer1.0 med
+layer1.1 med
+layer2.0 med
+layer2.1 med
+layer3.0 med
+layer3.1 med
+layer4.0 med
+layer4.1 med
+Starting model evaluation of W5A5 block reconstruction (med)...
+Top-1 accuracy: 68.29, Top-5 accuracy: 88.29
+layer1.0 high
+layer1.1 high
+layer2.0 high
+layer2.1 high
+layer3.0 high
+layer3.1 high
+layer4.0 high
+layer4.1 high
+Starting model evaluation of W5A6 block reconstruction (high)...
+Top-1 accuracy: 68.26, Top-5 accuracy: 88.27
+[1;34mwandb[0m: 🚀 View run [33mapricot-dust-100[0m at: [34mhttps://wandb.ai/d7chong/ptmq-pytorch/runs/lh5j6dk9[0m
+[1;34mwandb[0m: Find logs at: [1;35mwandb/run-20241010_200341-lh5j6dk9/logs[0m
