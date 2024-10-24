@@ -15,16 +15,15 @@ cfg = parse_config(CONFIG_PATH)
 
 wandb.init(
     # set the wandb project where this run will be logged
-    project="ptmq-pytorch",
+    project="ptmq(scale, zeropoint)_after_loss_structure",
 
     # track hyperparameters and run metadata
     config={
         "architecture": "ResNet-18",
-        "dataset": "ImageNet1K-val",
+        "dataset": "Imagenet",
         "recon_iters": cfg.quant.recon.iters,
     }
 )
-
 
 def save_inp_oup_data(model, module, calib_data: list, store_inp=False, store_oup=False,
                       bs: int = 32, keep_gpu: bool = True):
@@ -294,6 +293,7 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
             a_opt.step()
             a_scheduler.step()
         
+        """
         wandb.log(
             {
                 'Block Reconstruction Loss (GD Loss)': loss_func.recon_loss,
@@ -301,11 +301,35 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
                 'Total Loss (round+recon)': loss.item()
             }
         )
+
+        """
+
+        scales = {}
+        zero_points = {}
+
+        for name, layer in q_module.named_modules():
+            if isinstance(layer, (nn.Conv2d, nn.Linear)):
+                # weight scale, zero point 
+                weight_quantizer = layer.weight_fake_quant
+                weight_scale = weight_quantizer.scale.detach().cpu().numpy()
+                weight_zero_point = weight_quantizer.zero_point.detach().cpu().numpy()
+                scales[f"{name}_weight_scale"] = weight_scale
+                zero_points[f"{name}_weight_zero_point"] = weight_zero_point
+
+            if isinstance(layer, QuantizeBase) and 'post_act_fake_quantize' in name:
+                # 활성화 scale, zero point 추출하기 
+                act_scale = layer.scale.detach().cpu().numpy()
+                act_zero_point = layer.zero_point.detach().cpu().numpy()
+                scales[f"{name}_scale"] = act_scale
+                zero_points[f"{name}_zeropoint"] = act_zero_point
+
         
-        # print loss every 20 iterations
-        # if i % 200 == 0:
-        #     logger.info('Iter: {}, Loss: {:.3f}'.format(i, loss.item()))
-        #     print(f'Iter: {i}, Loss: {loss.item():.3f}, round_loss: {loss_func.round_loss:.3f}, recon_loss: {loss_func.recon_loss:.3f}')
+        wandb.log(
+            {
+                **scales, **zero_points, 'iteration': i
+            }
+        )
+
 
     torch.cuda.empty_cache()
     # a_para_idx = 0
@@ -315,9 +339,4 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
             weight_quantizer = layer.weight_fake_quant
             layer.weight.data = weight_quantizer.get_hard_value(layer.weight.data)
             weight_quantizer.adaround = False
-        # if isinstance(layer, QuantizeBase) and 'post_act_fake_quantize' in name:
-        #     print(f"{name} - SCALE UDPATE!")
-        #     print(f"Current scale: {layer.scale}")
-        #     print(f"{a_para_prev[a_para_idx]} -> {a_para[a_para_idx]}")
-        #     layer.scale = a_para[a_para_idx]
-        #     a_para_idx += 1
+     

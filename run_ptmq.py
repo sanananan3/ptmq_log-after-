@@ -6,12 +6,14 @@ import time
 import copy
 import logging
 import argparse
+import wandb
+import matplotlib.pyplot as plt
 
 import utils
 import utils.eval_utils as eval_utils
 from utils.ptmq_recon import ptmq_reconstruction
 from utils.fold_bn import search_fold_and_remove_bn, StraightThrough
-from utils.model_utils import quant_modules, load_model, set_qmodel_block_aqbit
+from utils.model_utils import quant_modules, load_model, set_qmodel_block_aqbit, parse_config
 from quant.quant_state import enable_calib_without_quant, enable_quantization, disable_all
 from quant.quant_module import QuantizedLayer, QuantizedBlock
 from quant.fake_quant import QuantizeBase
@@ -19,6 +21,8 @@ from quant.observer import ObserverBase
 
 logger = logging.getLogger('ptmq')
 
+CONFIG_PATH = '/content/ptmq_log/config/gpu_config.yaml'
+cfg = parse_config(CONFIG_PATH)
 
 def quantize_model(model, config):
     def replace_module(module, config, qoutput=True):
