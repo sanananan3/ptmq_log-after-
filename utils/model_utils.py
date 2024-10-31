@@ -22,40 +22,20 @@ class QuantBasicBlock(QuantizedBlock):
         self.qoutput = qoutput
 
 
-        self.conv1_relu_low = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_low)
-        self.conv1_relu_mid = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_mid)
-        self.conv1_relu_high = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_high)
+        # weight 에 대한 quantizer 
 
-        self.conv2_low = QuantizedLayer(orig_module.conv2, None, config, qoutput=False, w_qconfig=config.quant.w_qconfig_low)
-        self.conv2_mid = QuantizedLayer(orig_module.conv2, None, config, qoutput=False, w_qconfig=config.quant.w_qconfig_mid)
-        self.conv2_high = QuantizedLayer(orig_module.conv2, None, config, qoutput=False, w_qconfig=config.quant.w_qconfig_high)
+        self.conv1_relu_low = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_low, qoutput=False)
+        self.conv1_relu_mid = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_med, qoutput=False)
+        self.conv1_relu_high = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_high, qoutput=False)
+
+        self.conv2_low = QuantizedLayer(orig_module.conv2, None, config,  w_qconfig=config.quant.w_qconfig_low, qoutput=False)
+        self.conv2_mid = QuantizedLayer(orig_module.conv2, None, config, w_qconfig=config.quant.w_qconfig_med, qoutput=False)
+        self.conv2_high = QuantizedLayer(orig_module.conv2, None, config, w_qconfig=config.quant.w_qconfig_high, qoutput=False)
         
-        self.w_l_conv1 = None
-        self.w_m_conv1 = None 
-        self.w_h_conv1 = None 
-        self.w_lmh_conv1 = None 
-
-                
-        self.w_l_conv2 = None
-        self.w_m_conv2 = None 
-        self.w_h_conv2 = None 
-        self.w_lmh_conv2 = None 
-
-
-        # conv1과 conv2의 양자화된 weight 관리
-        self.w_l_conv1 = self.conv1_relu_low.module.weight_fake_quant
-        self.w_m_conv1 = self.conv1_relu_mid.module.weight_fake_quant
-        self.w_h_conv1 = self.conv1_relu_high.module.weight_fake_quant
-
-        self.w_l_conv2 = self.conv2_low.module.weight_fake_quant
-        self.w_m_conv2 = self.conv2_mid.module.weight_fake_quant
-        self.w_h_conv2 = self.conv2_high.module.weight_fake_quant
-
-
         if orig_module.downsample is None:
             self.downsample = None
         else:
-            self.downsample = QuantizedLayer(orig_module.downsample[0], None, config, qoutput=False)
+            self.downsample = QuantizedLayer(orig_module.downsample[0], None, config, w_qconfig=config.quant.w_qconfig, qoutput=False)
         self.activation = orig_module.relu2
 
         if self.qoutput:
@@ -78,10 +58,21 @@ class QuantBasicBlock(QuantizedBlock):
         residual = x if self.downsample is None else self.downsample(x)
 
         # Conv1 -> low, mid, high bit-width로 양자화된 출력 계산 
+        
+        self.w_l_conv1 = self.conv1_relu_low
+        self.w_m_conv1 = self.conv1_relu_mid
+        self.w_h_conv1 = self.conv1_relu_high
 
+        self.w_l_conv2 = self.conv2_low
+        self.w_m_conv2 = self.conv2_mid
+        self.w_h_conv2 = self.conv2_high
+
+        
         out_low = self.conv1_relu_low(x)
         out_mid = self.conv1_relu_mid(x)
         out_high = self.conv1_relu_high(x)
+
+      
 
         # Conv2 -> low, mid, hight 비트로 양자화된 출력 계산 
         out_low = self.conv2_low(out_low)
@@ -97,6 +88,9 @@ class QuantBasicBlock(QuantizedBlock):
         out_mid = self.activation(out_mid)
         out_high = self.activation(out_high)
 
+        out = out_low*self.lambda1+ out_mid*self.lambda2 + out_high*self.lambda3
+
+
 
         if self.qoutput:
             if self.out_mode == "calib":
@@ -108,6 +102,7 @@ class QuantBasicBlock(QuantizedBlock):
                 f_mixed = torch.where(torch.rand_like(out) < self.mixed_p, out, self.f_lmh)
                 
                 out = f_mixed
+
             elif self.out_mode == "low":
                 out = self.block_post_act_fake_quantize_med(out_low)
             elif self.out_mode == "med":

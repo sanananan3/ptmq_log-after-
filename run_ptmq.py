@@ -13,7 +13,9 @@ import utils
 import utils.eval_utils as eval_utils
 from utils.ptmq_recon import ptmq_reconstruction
 from utils.fold_bn import search_fold_and_remove_bn, StraightThrough
-from utils.model_utils import quant_modules, load_model, set_qmodel_block_aqbit, parse_config
+from utils.model_utils import quant_modules, load_model, set_qmodel_block_aqbit
+from utils.eval_utils import DataSaverHook, StopForwardException, parse_config
+
 from quant.quant_state import enable_calib_without_quant, enable_quantization, disable_all
 from quant.quant_module import QuantizedLayer, QuantizedBlock
 from quant.fake_quant import QuantizeBase
@@ -37,7 +39,9 @@ def quantize_model(model, config):
             if type(child_module) in quant_modules:
                 setattr(module, name, quant_modules[type(child_module)](child_module, config, tmp_qoutput))
             elif isinstance(child_module, (nn.Conv2d, nn.Linear)):
-                setattr(module, name, QuantizedLayer(child_module, None, config, qoutput=tmp_qoutput))
+                setattr(module, name, QuantizedLayer(child_module, None, config, w_qconfig=config.quant.w_qconfig, qoutput=tmp_qoutput))
+
+                #setattr(module, name, QuantizedLayer(child_module, None, config, qoutput=tmp_qoutput))
                 prev_qmodule = getattr(module, name)
             elif isinstance(child_module, (nn.ReLU, nn.ReLU6)):
                 if prev_qmodule is not None:
@@ -108,6 +112,7 @@ def main(config_path):
     
     # quanitze model if config.quant is defined
     if hasattr(config, 'quant'):
+        print("여기까진 들어옴")
         model = quantize_model(model, config)
         
     model.cuda() # move model to GPU
