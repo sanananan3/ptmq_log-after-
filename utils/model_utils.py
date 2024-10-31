@@ -20,13 +20,44 @@ class QuantBasicBlock(QuantizedBlock):
         super().__init__()
         self.out_mode = out_mode
         self.qoutput = qoutput
-        self.conv1_relu = QuantizedLayer(orig_module.conv1, orig_module.relu1, config)
-        self.conv2 = QuantizedLayer(orig_module.conv2, None, config, qoutput=False)
+
+
+        self.conv1_relu_low = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_low)
+        self.conv1_relu_mid = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_mid)
+        self.conv1_relu_high = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_high)
+
+        self.conv2_low = QuantizedLayer(orig_module.conv2, None, config, qoutput=False, w_qconfig=config.quant.w_qconfig_low)
+        self.conv2_mid = QuantizedLayer(orig_module.conv2, None, config, qoutput=False, w_qconfig=config.quant.w_qconfig_mid)
+        self.conv2_high = QuantizedLayer(orig_module.conv2, None, config, qoutput=False, w_qconfig=config.quant.w_qconfig_high)
+        
+        self.w_l_conv1 = None
+        self.w_m_conv1 = None 
+        self.w_h_conv1 = None 
+        self.w_lmh_conv1 = None 
+
+                
+        self.w_l_conv2 = None
+        self.w_m_conv2 = None 
+        self.w_h_conv2 = None 
+        self.w_lmh_conv2 = None 
+
+
+        # conv1과 conv2의 양자화된 weight 관리
+        self.w_l_conv1 = self.conv1_relu_low.module.weight_fake_quant
+        self.w_m_conv1 = self.conv1_relu_mid.module.weight_fake_quant
+        self.w_h_conv1 = self.conv1_relu_high.module.weight_fake_quant
+
+        self.w_l_conv2 = self.conv2_low.module.weight_fake_quant
+        self.w_m_conv2 = self.conv2_mid.module.weight_fake_quant
+        self.w_h_conv2 = self.conv2_high.module.weight_fake_quant
+
+
         if orig_module.downsample is None:
             self.downsample = None
         else:
             self.downsample = QuantizedLayer(orig_module.downsample[0], None, config, qoutput=False)
         self.activation = orig_module.relu2
+
         if self.qoutput:
             self.block_post_act_fake_quantize_low = Quantizer(None, config.quant.a_qconfig_low)
             self.block_post_act_fake_quantize_med = Quantizer(None, config.quant.a_qconfig_med)
@@ -45,26 +76,44 @@ class QuantBasicBlock(QuantizedBlock):
             
     def forward(self, x):
         residual = x if self.downsample is None else self.downsample(x)
-        out = self.conv1_relu(x)
-        out = self.conv2(out)
-        out += residual
-        out = self.activation(out)
+
+        # Conv1 -> low, mid, high bit-width로 양자화된 출력 계산 
+
+        out_low = self.conv1_relu_low(x)
+        out_mid = self.conv1_relu_mid(x)
+        out_high = self.conv1_relu_high(x)
+
+        # Conv2 -> low, mid, hight 비트로 양자화된 출력 계산 
+        out_low = self.conv2_low(out_low)
+        out_mid = self.conv2_mid(out_mid)
+        out_high = self.conv2_high(out_high)
+
+        out_low += residual
+        out_mid += residual
+        out_high += residual
+
+          # 활성화 함수 적용
+        out_low = self.activation(out_low)
+        out_mid = self.activation(out_mid)
+        out_high = self.activation(out_high)
+
+
         if self.qoutput:
             if self.out_mode == "calib":
-                self.f_l = self.block_post_act_fake_quantize_low(out)
-                self.f_m = self.block_post_act_fake_quantize_med(out)
-                self.f_h = self.block_post_act_fake_quantize_high(out)
+                self.f_l = self.block_post_act_fake_quantize_med(out_low)
+                self.f_m = self.block_post_act_fake_quantize_med(out_mid)
+                self.f_h = self.block_post_act_fake_quantize_med(out_high)
                 
                 self.f_lmh = self.lambda1 * self.f_l + self.lambda2 * self.f_m + self.lambda3 * self.f_h
                 f_mixed = torch.where(torch.rand_like(out) < self.mixed_p, out, self.f_lmh)
                 
                 out = f_mixed
             elif self.out_mode == "low":
-                out = self.block_post_act_fake_quantize_low(out)
+                out = self.block_post_act_fake_quantize_med(out_low)
             elif self.out_mode == "med":
-                out = self.block_post_act_fake_quantize_med(out)
+                out = self.block_post_act_fake_quantize_med(out_mid)
             elif self.out_mode == "high":
-                out = self.block_post_act_fake_quantize_high(out)
+                out = self.block_post_act_fake_quantize_med(out_high)
             else:
                 raise ValueError(f"Invalid out_mode '{self.out_mode}': only ['low', 'med', 'high'] are supported")
         return out
@@ -74,6 +123,7 @@ class QuantBottleneck(QuantizedBlock):
     """
     Implementation of Quantized Bottleneck Block used in ResNet-50, Resnet-101, and ResNet-152.
     """
+    # weight multi bit 은 차후에
     def __init__(self, orig_module, config, qoutput=True):
         super().__init__()
         self.qoutput = qoutput

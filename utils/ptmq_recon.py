@@ -10,7 +10,7 @@ from quant.quant_module import QuantizedModule, QuantizedBlock
 from quant.fake_quant import LSQFakeQuantize, LSQPlusFakeQuantize, QuantizeBase
 logger = logging.getLogger('ptmq')
 
-CONFIG_PATH = 'config/gpu_config.yaml'
+CONFIG_PATH = ''
 cfg = parse_config(CONFIG_PATH)
 
 wandb.init(
@@ -113,10 +113,10 @@ def gd_loss(f_fp, f_l, f_m, f_h, f_lmh, qconfig):
     gamma2 = qconfig.ptmq.gamma2
     gamma3 = qconfig.ptmq.gamma3
     
-    loss_fp = torch.nn.functional.mse_loss(f_fp, f_lmh, reduction='mean')
-    loss_hm = torch.nn.functional.mse_loss(f_h, f_m, reduction='mean')
-    loss_hl = torch.nn.functional.mse_loss(f_h, f_l, reduction='mean')
-    gd_loss = gamma1 * loss_fp + gamma2 * loss_hm + gamma3 * loss_hl
+    loss_fp = torch.nn.functional.mse_loss(f_fp, f_h, reduction='mean')
+    #loss_hm = torch.nn.functional.mse_loss(f_h, f_m, reduction='mean')
+    #loss_hl = torch.nn.functional.mse_loss(f_h, f_l, reduction='mean')
+    gd_loss = gamma1 * loss_fp 
     
     # wandb.log(
     #     {
@@ -154,11 +154,11 @@ class LossFunction:
         # TEMP
         self.recon_loss = None
         self.round_loss = None
-        
+        self.weight_loss = None # weight multi bit 추가     
         
         self.count = 0
 
-    def __call__(self, fp_block_output, q_block_output, f_l, f_m, f_h, f_lmh):
+    def __call__(self, fp_block_output, q_block_output, f_h, w_l_conv1, w_m_conv1, w_h_conv1, w_fp_conv1, w_l_conv2, w_m_conv2, w_h_conv2, w_fp_conv2):
         """
         Compute the total loss for adaptive rounding with ptmq
         - total_loss = recon_loss + round_loss
@@ -170,8 +170,24 @@ class LossFunction:
         # Compute reconstruction loss
         recon_loss = 0.
         if self.use_gd_loss:
-            recon_loss = gd_loss(fp_block_output, f_l, f_m, f_h, f_lmh, self.qconfig)
+            recon_loss = gd_loss(fp_block_output,f_h, self.qconfig)
         
+        # Compute weight loss 
+
+        loss_conv1 = (
+            torch.nn.functional.mse_loss(w_l_conv1, w_h_conv1) +
+            torch.nn.functional.mse_loss(w_m_conv1, w_h_conv1) +
+            torch.nn.functional.mse_loss(w_h_conv1, w_fp_conv1)
+
+        )
+        loss_conv2 = {
+            torch.nn.functional.mse_loss(w_l_conv2, w_h_conv2) +
+            torch.nn.functional.mse_loss(w_m_conv2, w_h_conv2) +
+            torch.nn.functional.mse_loss(w_h_conv2, w_fp_conv2)
+        }
+
+        weight_loss = loss_conv1 + loss_conv2
+
         # Compute rounding loss
         b = self.temp_decay(self.count)
         if self.count < self.loss_start:
@@ -184,12 +200,13 @@ class LossFunction:
                     round_loss += self.weight * (1 - ((round_vals - .5).abs() * 2).pow(b)).sum()
         
         # Get total loss
-        total_loss = recon_loss + round_loss
+        total_loss = recon_loss + round_loss + weight_loss
         """
         """
         # TEMP
         self.recon_loss = recon_loss
         self.round_loss = round_loss
+        self.weight_loss = weight_loss
         
         # Print loss
         # if self.count % 500 == 0:
@@ -255,6 +272,7 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
     )
 
     print(q_module)
+
     for i in tqdm(range(qconfig.recon.iters), desc=f"Reconstruction with GD Loss: {use_gd_loss}..."):
         # Get random index for batch
         batch_idx = torch.randint(0, q_block_inputs.size(0), (qconfig.recon.batch_size,))
@@ -268,16 +286,37 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
         q_block_input = q_block_inputs[batch_idx].to(device)
         q_block_output = q_module(q_block_input)
         
+
+        # low, middle , high bit-widht의 weight와 full precision weight 가져오기 
+        w_l_conv1, w_m_conv1, w_h_conv1 = None, None, None
+        w_l_conv2, w_m_conv2, w_h_conv2 = None, None, None
+
+      
+        w_fp_conv1 = fp_module.conv1.weight
+        w_fp_conv2 = fp_module.conv2.weight
+
+            
+
         # init extra features for block reconstruction's gd_loss
-        f_l, f_m, f_h, f_lmh = None, None, None, None
+        # f_l, f_m, f_h, f_lmh = None, None, None, None
+        f_m = None
         if isinstance(q_module, QuantizedBlock):
-            f_l = q_module.f_l
+           # f_l = q_module.f_l
             f_m = q_module.f_m
-            f_h = q_module.f_h
-            f_lmh = q_module.f_lmh
+            #f_h = q_module.f_h
+           # f_lmh = q_module.f_lmh
             # f_mixed = q_block_output
         # Compute loss
-        loss = loss_func(fp_block_output, q_block_output, f_l, f_m, f_h, f_lmh)
+            w_l_conv1 = q_module.w_l_conv1
+            w_m_conv1 = q_module.w_m_conv1
+            w_h_conv1 = q_module.w_h_conv1
+            
+            w_l_conv2 = q_module.w_l_conv2
+            w_m_conv2 = q_module.w_m_conv2
+            w_h_conv2 = q_module.w_h_conv2 
+
+        loss = loss_func(fp_block_output, q_block_output, f_m, w_l_conv1, w_m_conv1, w_h_conv1, w_fp_conv1
+                         , w_l_conv2, w_m_conv2, w_h_conv2, w_fp_conv2)
 
         # clear old gradients
         if a_opt:
@@ -304,31 +343,6 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
 
         """
 
-        scales = {}
-        zero_points = {}
-
-        for name, layer in q_module.named_modules():
-            if isinstance(layer, (nn.Conv2d, nn.Linear)):
-                # weight scale, zero point 
-                weight_quantizer = layer.weight_fake_quant
-                weight_scale = weight_quantizer.scale.detach().cpu().numpy()
-                weight_zero_point = weight_quantizer.zero_point.detach().cpu().numpy()
-                scales[f"{name}_weight_scale"] = weight_scale
-                zero_points[f"{name}_weight_zero_point"] = weight_zero_point
-
-            if isinstance(layer, QuantizeBase) and 'post_act_fake_quantize' in name:
-                # 활성화 scale, zero point 추출하기 
-                act_scale = layer.scale.detach().cpu().numpy()
-                act_zero_point = layer.zero_point.detach().cpu().numpy()
-                scales[f"{name}_scale"] = act_scale
-                zero_points[f"{name}_zeropoint"] = act_zero_point
-
-        
-        wandb.log(
-            {
-                **scales, **zero_points, 'iteration': i
-            }
-        )
 
 
     torch.cuda.empty_cache()

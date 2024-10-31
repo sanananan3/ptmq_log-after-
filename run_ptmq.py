@@ -21,7 +21,7 @@ from quant.observer import ObserverBase
 
 logger = logging.getLogger('ptmq')
 
-CONFIG_PATH = '/content/ptmq_log/config/gpu_config.yaml'
+CONFIG_PATH = '/content/ptmq_log_after/config/gpu_config.yaml'
 cfg = parse_config(CONFIG_PATH)
 
 def quantize_model(model, config):
@@ -153,30 +153,12 @@ def main(config_path):
     print("Completed block reconstruction")
     print(f"PTMQ block reconstruction took {tok - tik:.2f} seconds")
     
-    
-    a_qmodes = ["low", "med", "high"]
-    w_qbit = config.quant.w_qconfig.bit
-    a_qbits = [config.quant.a_qconfig_low.bit,
-               config.quant.a_qconfig_med.bit,
-               config.quant.a_qconfig_high.bit]
-    
-    enable_quantization(model)
-    for a_qmode, a_qbit in zip(a_qmodes, a_qbits):
-        set_qmodel_block_aqbit(model, a_qmode)
-        
-        for name, module in model.named_modules():
-            if isinstance(module, QuantizedBlock):
-                print(name, module.out_mode)
-        
-        print(f"Starting model evaluation of W{w_qbit}A{a_qbit} block reconstruction ({a_qmode})...")
-        acc1, acc5 = eval_utils.validate_model(val_loader, model)
-        
-        print(f"Top-1 accuracy: {acc1:.2f}, Top-5 accuracy: {acc5:.2f}")
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='configuration',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--config', default='config/gpu_config.yaml', type=str, help='Path to config file')
+    parser.add_argument('--config', default='/content/ptmq_log_after/config/gpu_config.yaml', type=str, help='Path to config file')
     args = parser.parse_args()
     
     main(args.config)

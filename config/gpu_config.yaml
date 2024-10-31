@@ -2,22 +2,42 @@ quant:
     a_qconfig_low: # layer quant config for low bitwidth quantizer
         quantizer: LSQFakeQuantize
         observer: MSEObserver
-        bit: 4
+        bit: 3
         symmetric: False
         ch_axis: -1
     a_qconfig_med: # layer quant config for medium bitwidth quantizer
         quantizer: LSQFakeQuantize
         observer: MSEObserver
-        bit: 5
+        bit: 4
         symmetric: False
         ch_axis: -1
     a_qconfig_high: # layer quant config for high bitwidth quantizer
         quantizer: LSQFakeQuantize
         observer: MSEObserver
-        bit: 6
+        bit: 5
         symmetric: False
         ch_axis: -1
+                
     w_qconfig:
+        quantizer: AdaRoundFakeQuantize
+        observer: MSEObserver
+        bit: 4
+        symmetric: False
+        ch_axis: 0
+
+    w_qconfig_low:
+        quantizer: AdaRoundFakeQuantize
+        observer: MSEObserver
+        bit: 3
+        symmetric: False
+        ch_axis: 0
+    w_qconfig_med:
+        quantizer: AdaRoundFakeQuantize
+        observer: MSEObserver
+        bit: 4
+        symmetric: False
+        ch_axis: 0
+    w_qconfig_high:
         quantizer: AdaRoundFakeQuantize
         observer: MSEObserver
         bit: 5
@@ -29,7 +49,7 @@ quant:
         scale_lr: 4.0e-5
         warm_up: 0.2
         weight: 0.01
-        iters: 5000 #20000
+        iters: 1 #20000
         b_range: [20, 2]
         keep_gpu: True
         round_mode: learned_hard_sigmoid
@@ -47,9 +67,9 @@ model:                    # architecture details
     type: resnet18        # model name
     kwargs:
         num_classes: 1000
-    path: ./resnet18_weights.pth
+    path: "/content/ptmq_log_after/models/resenet18_imagenet.pth"
 data:
-    path: ../imagenet
+    path: "/content/ptmq_log_after/imagenet"
     batch_size: 256
     num_workers: 16
     pin_memory: True

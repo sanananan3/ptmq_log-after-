@@ -140,13 +140,13 @@ def get_module_args(module):
         raise NotImplementedError
 
 
-def Quantizer(module, config):
+def Quantizer(module, config, w_qconfig=None):
     if module is None:
         return ActivationQuantizer(a_qconfig=config)
     module_type = type(module)
     if module_type in module_type_to_quant_weight:
         kwargs = get_module_args(module)
-        qmodule = module_type_to_quant_weight[module_type](**kwargs, w_qconfig=config.quant.w_qconfig)
+        qmodule = module_type_to_quant_weight[module_type](**kwargs, w_qconfig)
         qmodule.weight.data = module.weight.data.clone()
         if getattr(module, 'bias', None) is not None:
             qmodule.bias.data = module.bias.data.clone()
@@ -160,15 +160,16 @@ class QuantizedModule(nn.Module):
 
 
 class QuantizedLayer(QuantizedModule):
-    def __init__(self, module, activation, config, qoutput=True):
+    def __init__(self, module, activation, config, w_qconfig = None, qoutput=True):
         super().__init__()
         self.qoutput = qoutput
-        self.module = Quantizer(module, config)
+        self.module = Quantizer(module, config, w_qconfig=w_qconfig)
         self.activation = activation
         if qoutput:
             self.layer_post_act_fake_quantize = Quantizer(None, config.quant.a_qconfig_low)
-            
+
     def forward(self, x):
+
         x = self.module(x)
         if self.activation is not None:
             x = self.activation(x)
