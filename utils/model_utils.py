@@ -51,7 +51,6 @@ class QuantBasicBlock(QuantizedBlock):
             self.lambda1 = config.quant.ptmq.lambda1
             self.lambda2 = config.quant.ptmq.lambda2
             self.lambda3 = config.quant.ptmq.lambda3
-            
             self.mixed_p = config.quant.ptmq.mixed_p
             
     def forward(self, x):
@@ -59,20 +58,17 @@ class QuantBasicBlock(QuantizedBlock):
 
         # Conv1 -> low, mid, high bit-width로 양자화된 출력 계산 
         
-        self.w_l_conv1 = self.conv1_relu_low
-        self.w_m_conv1 = self.conv1_relu_mid
-        self.w_h_conv1 = self.conv1_relu_high
+        # self.w_l_conv1 = self.conv1_relu_low
+        # self.w_m_conv1 = self.conv1_relu_mid
+        # self.w_h_conv1 = self.conv1_relu_high
 
-        self.w_l_conv2 = self.conv2_low
-        self.w_m_conv2 = self.conv2_mid
-        self.w_h_conv2 = self.conv2_high
-
+        # self.w_l_conv2 = self.conv2_low
+        # self.w_m_conv2 = self.conv2_mid
+        # self.w_h_conv2 = self.conv2_high << 일단 이 부분은 뻄 ... 
         
         out_low = self.conv1_relu_low(x)
         out_mid = self.conv1_relu_mid(x)
         out_high = self.conv1_relu_high(x)
-
-      
 
         # Conv2 -> low, mid, hight 비트로 양자화된 출력 계산 
         out_low = self.conv2_low(out_low)
@@ -88,12 +84,16 @@ class QuantBasicBlock(QuantizedBlock):
         out_mid = self.activation(out_mid)
         out_high = self.activation(out_high)
 
-        out = out_low*self.lambda1+ out_mid*self.lambda2 + out_high*self.lambda3
+       #  out = out_low*self.lambda1+ out_mid*self.lambda2 + out_high*self.lambda3 << 이 부분도 찾지 않음 
 
 
 
         if self.qoutput:
             if self.out_mode == "calib":
+                # self.f_l = self.block_post_act_fake_quantize_low(out)
+                # self.f_m = self.block_post_act_fake_quantize_med(out)
+                # self.f_h = self.block_post_act_fake_quantize_high(out)
+
                 self.f_l = self.block_post_act_fake_quantize_med(out_low)
                 self.f_m = self.block_post_act_fake_quantize_med(out_mid)
                 self.f_h = self.block_post_act_fake_quantize_med(out_high)
@@ -104,11 +104,14 @@ class QuantBasicBlock(QuantizedBlock):
                 out = f_mixed
 
             elif self.out_mode == "low":
-                out = self.block_post_act_fake_quantize_med(out_low)
+               # out = self.block_post_act_fake_quantize_low(out)
+               out = self.block_post_act_fake_quantize_med(out_low)
             elif self.out_mode == "med":
-                out = self.block_post_act_fake_quantize_med(out_mid)
+               # out = self.block_post_act_fake_quantize_med(out)
+               out= self.block_post_act_fake_quantize_med(out_mid)
             elif self.out_mode == "high":
-                out = self.block_post_act_fake_quantize_med(out_high)
+               # out = self.block_post_act_fake_quantize_high(out)
+               out = self.block_post_act_fake_quantize_med(out_high)
             else:
                 raise ValueError(f"Invalid out_mode '{self.out_mode}': only ['low', 'med', 'high'] are supported")
         return out

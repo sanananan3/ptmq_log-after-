@@ -189,5 +189,5 @@ def validate_model(val_loader, model, device=None, print_freq=100):
         if i % print_freq == 0:
             progress.display(i)
     
-    logger.info(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'.format(top1=top1, top5=top5))
+    print(' * Acc@1 {top1.avg:.3f} Acc@5 {top5.avg:.3f}'.format(top1=top1, top5=top5))
     return top1.avg, top5.avg

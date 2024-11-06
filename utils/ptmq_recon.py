@@ -5,7 +5,7 @@ import logging
 from tqdm import tqdm
 import wandb
 
-from utils.eval_utils import DataSaverHook, StopForwardException, parse_config
+from utils.eval_utils import DataSaverHook, StopForwardException, parse_config, validate_model
 from quant.quant_module import QuantizedModule, QuantizedBlock
 from quant.fake_quant import LSQFakeQuantize, LSQPlusFakeQuantize, QuantizeBase
 logger = logging.getLogger('ptmq')
@@ -96,15 +96,15 @@ def get_mixed_bit_feature(f_fp, f_l, f_m, f_h, qconfig):
     return f_mixed
 
 
-def gd_loss(f_fp, f_m,qconfig):
+def gd_loss(f_fp,f_l, f_m, f_h, f_mixed, qconfig):
     gamma1 = qconfig.ptmq.gamma1
     gamma2 = qconfig.ptmq.gamma2
     gamma3 = qconfig.ptmq.gamma3
     
-    loss_fp = torch.nn.functional.mse_loss(f_fp, f_m, reduction='mean')
-    #loss_hm = torch.nn.functional.mse_loss(f_h, f_m, reduction='mean')
-    #loss_hl = torch.nn.functional.mse_loss(f_h, f_l, reduction='mean')
-    gd_loss = gamma1 * loss_fp 
+    loss_fp = torch.nn.functional.mse_loss(f_fp, f_mixed, reduction='mean')
+    loss_hm = torch.nn.functional.mse_loss(f_h, f_m, reduction='mean')
+    loss_hl = torch.nn.functional.mse_loss(f_h, f_l, reduction='mean')
+    gd_loss = gamma1 * loss_fp + gamma2 * loss_hm + gamma3 * loss_hl
     
     # wandb.log(
     #     {
@@ -146,7 +146,7 @@ class LossFunction:
         
         self.count = 0
 
-    def __call__(self, fp_block_output, q_block_output, f_l, f_m, f_h, f_mixed,  w_l_conv1, w_m_conv1, w_h_conv1, w_l_conv2, w_m_conv2, w_h_conv2):
+    def __call__(self, fp_block_output, q_block_output, f_l, f_m, f_h, f_mixed):
         """
         Compute the total loss for adaptive rounding with ptmq
         - total_loss = recon_loss + round_loss
@@ -158,7 +158,7 @@ class LossFunction:
         # Compute reconstruction loss
         recon_loss = 0.
         if self.use_gd_loss:
-            recon_loss = gd_loss(fp_block_output, f_m, self.qconfig)
+            recon_loss = gd_loss(fp_block_output, f_l, f_m, f_h, f_mixed, self.qconfig)
         
         """ Compute weight loss 
     
@@ -186,9 +186,8 @@ class LossFunction:
                     round_vals = layer.weight_fake_quant.rectified_sigmoid()
                     round_loss += self.weight * (1 - ((round_vals - .5).abs() * 2).pow(b)).sum()
                     
-        
         # Get total loss
-        total_loss = recon_loss + round_loss # + weight_loss
+        total_loss = recon_loss + round_loss
         """
         """
         # TEMP
@@ -279,8 +278,8 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
         f_l, f_m, f_h, f_mixed = None, None, None, None
 
         # low, middle , high bit-widht의 weight와 full precision weight 가져오기 
-        w_l_conv1, w_m_conv1, w_h_conv1 = None, None, None
-        w_l_conv2, w_m_conv2, w_h_conv2 = None, None, None
+        # w_l_conv1, w_m_conv1, w_h_conv1 = None, None, None
+        # w_l_conv2, w_m_conv2, w_h_conv2 = None, None, None
 
         if isinstance(q_module, QuantizedBlock):
             f_l = q_module.f_l
@@ -289,15 +288,15 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
            # f_lmh = q_module.f_lmh
             f_mixed = q_block_output
         # Compute loss
-            w_l_conv1 = q_module.w_l_conv1
-            w_m_conv1 = q_module.w_m_conv1
-            w_h_conv1 = q_module.w_h_conv1
+            # w_l_conv1 = q_module.w_l_conv1
+            # w_m_conv1 = q_module.w_m_conv1
+            # w_h_conv1 = q_module.w_h_conv1
             
-            w_l_conv2 = q_module.w_l_conv2
-            w_m_conv2 = q_module.w_m_conv2
-            w_h_conv2 = q_module.w_h_conv2 
+            # w_l_conv2 = q_module.w_l_conv2
+            # w_m_conv2 = q_module.w_m_conv2
+            # w_h_conv2 = q_module.w_h_conv2 
 
-        loss = loss_func(fp_block_output, q_block_output, f_l, f_m, f_h, f_mixed, w_l_conv1, w_m_conv1, w_h_conv1, w_l_conv2, w_m_conv2, w_h_conv2)
+        loss = loss_func(fp_block_output, q_block_output, f_l, f_m, f_h, f_mixed)
 
         # clear old gradients
         if a_opt:
@@ -313,19 +312,6 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
             a_opt.step()
             a_scheduler.step()
         
-        """
-        wandb.log(
-            {
-                'Block Reconstruction Loss (GD Loss)': loss_func.recon_loss,
-                'Block Weight Rounding Loss (AdaRound)': loss_func.round_loss,
-                'Total Loss (round+recon)': loss.item()
-            }
-        )
-
-        """
-
-
-
     torch.cuda.empty_cache()
     # a_para_idx = 0
     # UPDATE WITH OPTIMIZED PARAMS

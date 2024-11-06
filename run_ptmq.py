@@ -14,7 +14,7 @@ import utils.eval_utils as eval_utils
 from utils.ptmq_recon import ptmq_reconstruction
 from utils.fold_bn import search_fold_and_remove_bn, StraightThrough
 from utils.model_utils import quant_modules, load_model, set_qmodel_block_aqbit
-from utils.eval_utils import DataSaverHook, StopForwardException, parse_config
+from utils.eval_utils import DataSaverHook, StopForwardException, parse_config, validate_model
 
 from quant.quant_state import enable_calib_without_quant, enable_quantization, disable_all
 from quant.quant_module import QuantizedLayer, QuantizedBlock
@@ -62,11 +62,13 @@ def quantize_model(model, config):
         print(name, type(module))
     
     
-    # for name, module in model.named_modules():
-    #     if isinstance(module, QuantizedBlock):
-    #         print(name, module.out_mode)
+    for name, module in model.named_modules():
+        if isinstance(module, QuantizedBlock):
+            print(name, module.out_mode)
     
     # we store all modules in the quantized model (weight_module or activation_module)
+
+
     w_list, a_list = [], []
     for name, module in model.named_modules():
         if isinstance(module, QuantizeBase):
@@ -112,7 +114,6 @@ def main(config_path):
     
     # quanitze model if config.quant is defined
     if hasattr(config, 'quant'):
-        print("여기까진 들어옴")
         model = quantize_model(model, config)
         
     model.cuda() # move model to GPU
@@ -154,9 +155,13 @@ def main(config_path):
                     recon_model(child_module, getattr(fp_module, name))
         
         recon_model(model, fp_model)
+    enable_quantization(model) # reconsturction 모델을 activate 하기 
+    validate_model(val_loader, model) # validation 데이터 셋 이용해서 성능 평가하기 
     tok = time.time()
     print("Completed block reconstruction")
     print(f"PTMQ block reconstruction took {tok - tik:.2f} seconds")
+    
+
     
 
 
