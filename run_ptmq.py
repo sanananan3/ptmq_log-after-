@@ -13,7 +13,7 @@ import utils
 import utils.eval_utils as eval_utils
 from utils.ptmq_recon import ptmq_reconstruction
 from utils.fold_bn import search_fold_and_remove_bn, StraightThrough
-from utils.model_utils import quant_modules, load_model, set_qmodel_block_aqbit
+from utils.model_utils import quant_modules, load_model, set_qmodel_block_wqbit
 from utils.eval_utils import DataSaverHook, StopForwardException, parse_config, validate_model
 
 from quant.quant_state import enable_calib_without_quant, enable_quantization, disable_all
@@ -155,13 +155,32 @@ def main(config_path):
                     recon_model(child_module, getattr(fp_module, name))
         
         recon_model(model, fp_model)
-    enable_quantization(model) # reconsturction 모델을 activate 하기 
-    validate_model(val_loader, model) # validation 데이터 셋 이용해서 성능 평가하기 
     tok = time.time()
     print("Completed block reconstruction")
     print(f"PTMQ block reconstruction took {tok - tik:.2f} seconds")
     
+    w_qmodes = ["low", "mid", "high"]
+    a_qbit = config.quant.a_qconfig_med.bit,
+    w_qbits = [config.quant.w_qconfig_low, 
+               config.quant.w_qconfig_med, 
+               config.quant.w_qconfig_high, 
+               ]
+    enable_quantization(model) # reconsturction 모델을 activate 하기
 
+    for w_qmode, w_qbit in zip(w_qmodes, w_qbits):
+        set_qmodel_block_wqbit(model,w_qmode)
+
+        for name, module in model.named_modules():
+            if isinstance(module, QuantizedBlock):
+                print(name, module.out_mode)
+
+        print(f"Starting model evaluation of W{w_qbit}A{a_qbit} block reconsutciotn ({w_qmode}....)")
+        acc1, acc5 = eval_utils.validate_model(val_loader, model)
+
+        print(f"Top-1 accuracy: {acc1:.2f}, Top-5 accuracy: {acc5:.2f}")
+    # validate_model(val_loader, model) # validation 데이터 셋 이용해서 성능 평가하기 
+
+    
     
 
 

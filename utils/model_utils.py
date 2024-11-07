@@ -23,7 +23,7 @@ class QuantBasicBlock(QuantizedBlock):
 
 
         # weight 에 대한 quantizer 
-
+       
         self.conv1_relu_low = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_low, qoutput=False)
         self.conv1_relu_mid = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_med, qoutput=False)
         self.conv1_relu_high = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_high, qoutput=False)
@@ -39,9 +39,9 @@ class QuantBasicBlock(QuantizedBlock):
         self.activation = orig_module.relu2
 
         if self.qoutput:
-            self.block_post_act_fake_quantize_low = Quantizer(None, config.quant.a_qconfig_low)
+            # self.block_post_act_fake_quantize_low = Quantizer(None, config.quant.a_qconfig_low)
             self.block_post_act_fake_quantize_med = Quantizer(None, config.quant.a_qconfig_med)
-            self.block_post_act_fake_quantize_high = Quantizer(None, config.quant.a_qconfig_high)
+            # self.block_post_act_fake_quantize_high = Quantizer(None, config.quant.a_qconfig_high)
             
             self.f_l = None
             self.f_m = None
@@ -84,9 +84,6 @@ class QuantBasicBlock(QuantizedBlock):
         out_mid = self.activation(out_mid)
         out_high = self.activation(out_high)
 
-       #  out = out_low*self.lambda1+ out_mid*self.lambda2 + out_high*self.lambda3 << 이 부분도 찾지 않음 
-
-
 
         if self.qoutput:
             if self.out_mode == "calib":
@@ -99,7 +96,7 @@ class QuantBasicBlock(QuantizedBlock):
                 self.f_h = self.block_post_act_fake_quantize_med(out_high)
                 
                 self.f_lmh = self.lambda1 * self.f_l + self.lambda2 * self.f_m + self.lambda3 * self.f_h
-                f_mixed = torch.where(torch.rand_like(out) < self.mixed_p, out, self.f_lmh)
+                f_mixed = torch.where(torch.rand_like(out_mid) < self.mixed_p, out_mid, self.f_lmh)
                 
                 out = f_mixed
 
@@ -136,9 +133,9 @@ class QuantBottleneck(QuantizedBlock):
         self.activation = orig_module.relu3
         if self.qoutput:
             self.block_post_act_fake_quantize = Quantizer(None, config.quant.a_qconfig)
-            self.block_post_act_fake_quantize_low = Quantizer(None, config.quant.a_qconfig_low)
+            # self.block_post_act_fake_quantize_low = Quantizer(None, config.quant.a_qconfig_low)
             self.block_post_act_fake_quantize_med = Quantizer(None, config.quant.a_qconfig_med)
-            self.block_post_act_fake_quantize_high = Quantizer(None, config.quant.a_qconfig_high)
+            # self.block_post_act_fake_quantize_high = Quantizer(None, config.quant.a_qconfig_high)
     
     def forward(self, x):
         residual = x if self.downsample is None else self.downsample(x)
@@ -149,9 +146,9 @@ class QuantBottleneck(QuantizedBlock):
         out = self.activation(out)
         if self.qoutput:
             out = self.block_post_act_fake_quantize(out)
-            out_low = self.block_post_act_fake_quantize_low(out)
+            out_low = self.block_post_act_fake_quantize_med(out)
             out_med = self.block_post_act_fake_quantize_med(out)
-            out_high = self.block_post_act_fake_quantize_high(out)
+            out_high = self.block_post_act_fake_quantize_med(out)
         return out
 
 quant_modules = {
@@ -172,4 +169,10 @@ def set_qmodel_block_aqbit(model, out_mode):
     for name, module in model.named_modules():
         if isinstance(module, QuantizedBlock):
             # print(name)
+            module.out_mode = out_mode
+
+def set_qmodel_block_wqbit(model, out_mode):
+    for name, module in model.named_modules():
+        if isinstance(module, QuantizedBlock):
+            print(name)
             module.out_mode = out_mode
