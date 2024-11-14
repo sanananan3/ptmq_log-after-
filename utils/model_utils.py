@@ -5,8 +5,9 @@ import gc
 from models.resnet import BasicBlock, Bottleneck, resnet18, resnet50
 from quant.quant_module import QuantizedLayer, QuantizedBlock, Quantizer
 
+# 1. QuantBasicBlock -> resnet18 
 
-class QuantBasicBlock(QuantizedBlock):
+class QuantBasicBlock(QuantizedBlock): 
     """
     Implementation of Quantized BasicBlock used in ResNet-18 and ResNet-34.
     qoutput:    whether to quantize the block output
@@ -58,14 +59,6 @@ class QuantBasicBlock(QuantizedBlock):
 
         # Conv1 -> low, mid, high bit-width로 양자화된 출력 계산 
         
-        # self.w_l_conv1 = self.conv1_relu_low
-        # self.w_m_conv1 = self.conv1_relu_mid
-        # self.w_h_conv1 = self.conv1_relu_high
-
-        # self.w_l_conv2 = self.conv2_low
-        # self.w_m_conv2 = self.conv2_mid
-        # self.w_h_conv2 = self.conv2_high << 일단 이 부분은 뻄 ... 
-        
         out_low = self.conv1_relu_low(x)
         out_mid = self.conv1_relu_mid(x)
         out_high = self.conv1_relu_high(x)
@@ -87,10 +80,7 @@ class QuantBasicBlock(QuantizedBlock):
 
         if self.qoutput:
             if self.out_mode == "calib":
-                # self.f_l = self.block_post_act_fake_quantize_low(out)
-                # self.f_m = self.block_post_act_fake_quantize_med(out)
-                # self.f_h = self.block_post_act_fake_quantize_high(out)
-
+   
                 self.f_l = self.block_post_act_fake_quantize_med(out_low)
                 self.f_m = self.block_post_act_fake_quantize_med(out_mid)
                 self.f_h = self.block_post_act_fake_quantize_med(out_high)
@@ -99,7 +89,7 @@ class QuantBasicBlock(QuantizedBlock):
                 f_mixed = torch.where(torch.rand_like(out_mid) < self.mixed_p, out_mid, self.f_lmh)
                 
                 out = f_mixed
-
+                
             elif self.out_mode == "low":
                # out = self.block_post_act_fake_quantize_low(out)
                out = self.block_post_act_fake_quantize_med(out_low)
@@ -113,6 +103,7 @@ class QuantBasicBlock(QuantizedBlock):
                 raise ValueError(f"Invalid out_mode '{self.out_mode}': only ['low', 'med', 'high'] are supported")
         return out
 
+# 2. QuantBottleneck -> resnet-50 
 
 class QuantBottleneck(QuantizedBlock):
     """
@@ -122,9 +113,19 @@ class QuantBottleneck(QuantizedBlock):
     def __init__(self, orig_module, config, qoutput=True):
         super().__init__()
         self.qoutput = qoutput
-        self.conv1_relu = QuantizedLayer(orig_module.conv1, orig_module.relu1, config)
-        self.conv2_relu = QuantizedLayer(orig_module.conv2, orig_module.relu2, config)
-        self.conv3 = QuantizedLayer(orig_module.conv3, None, config, qoutput=False)
+
+        self.conv1_relu_low = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_low, qoutput=False)
+        self.conv1_relu_mid = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_med, qoutput=False)
+        self.conv1_relu_high = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_high, qoutput=False)
+
+        self.conv2_relu_low = QuantizedLayer(orig_module.conv2, orig_module.relu2, config, w_qconfig= config.quant.w_qconfig_low, qoutput=False)
+        self.conv2_relu_mid = QuantizedLayer(orig_module.conv2, orig_module.relu2, config, w_qconfig= config.quant.w_qconfig_med, qoutput=False)
+        self.conv2_relu_high = QuantizedLayer(orig_module.conv2, orig_module.relu2, config, w_qconfig= config.quant.w_qconfig_high, qoutput=False)
+
+        self.conv3_low = QuantizedLayer(orig_module.conv3, None, config, w_config=config.quant.w_qconfig_low, qoutput=False)
+        self.conv3_mid = QuantizedLayer(orig_module.conv3, None, config, w_config=config.quant.w_qconfig_med, qoutput=False)
+        self.conv3_high = QuantizedLayer(orig_module.conv3, None, config, w_config = config.quant.w_qconfig_high, qoutput=False)
+
         
         if orig_module.downsample is None:
             self.downsample = None
@@ -136,21 +137,74 @@ class QuantBottleneck(QuantizedBlock):
             # self.block_post_act_fake_quantize_low = Quantizer(None, config.quant.a_qconfig_low)
             self.block_post_act_fake_quantize_med = Quantizer(None, config.quant.a_qconfig_med)
             # self.block_post_act_fake_quantize_high = Quantizer(None, config.quant.a_qconfig_high)
-    
+            self.f_l = None 
+            self.f_m = None 
+            self.f_h = None 
+            self.f_lmh = None 
+
+            self.lambda1 = config.quant.ptmq.lambda1
+            self.lambda2 = config.quant.ptmq.lambda2
+            self.lambda3 = config.quant.ptmq.lambda3
+
+            self.mixed_p = config.quant.ptmq.mixed_p 
+
+
+
     def forward(self, x):
         residual = x if self.downsample is None else self.downsample(x)
-        out = self.conv1_relu(x)
-        out = self.conv2_relu(out)
-        out = self.conv3(out)
-        out += residual
-        out = self.activation(out)
-        if self.qoutput:
-            out = self.block_post_act_fake_quantize(out)
-            out_low = self.block_post_act_fake_quantize_med(out)
-            out_med = self.block_post_act_fake_quantize_med(out)
-            out_high = self.block_post_act_fake_quantize_med(out)
-        return out
+        out_low = self.conv1_relu_low(x)
+        out_mid = self.conv1_relu_mid(x)
+        out_high = self.conv1_relu_high(x)
 
+        out_low = self.conv2_relu_low(out_low)
+        out_mid = self.conv2_relu_mid(out_mid)
+        out_high = self.conv2_relu_high(out_high)
+
+        out_low = self.conv3_low(out_low)
+        out_mid = self.conv3_mid(out_mid)
+        out_high = self.conv3_high(out_high)
+
+
+        out_low += residual
+        out_mid += residual
+        out_high += residual 
+
+        out_low = self.activation(out_low)
+        out_mid = self.activation(out_mid)
+        out_high = self.activation(out_high)
+
+
+        if self.qoutput:
+            if self.out_mode == "calib":
+                self.f_l = self.block_post_act_fake_quantize_med(out_low)
+                self.f_m = self.block_post_act_fake_quantize_med(out_mid)
+                self.f_h = self.block_post_act_fake_quantize_med(out_high)
+
+                self.f_lmh = self.lambda1*self.f_l + self.lambda2*self.f_m + self.lambda3*self.f_h
+
+                f_mixed = torch.where(torch.rand_like(out_mid) < self.mixed_p , out_mid, self.f_lmh)
+
+                x = f_mixed 
+            elif self.out_mode == "low":
+                x = self.block_post_act_fake_quantize_med(out_low)
+            elif self.out_mode == "med":
+                x = self.block_post_act_fake_quantize_med(out_mid)
+            elif self.out_mode == "high":
+                x = self.block_post_act_fake_quantize_med(out_high)
+
+            else :
+                raise ValueError(
+                    f"Invalid out_mode '{self.out_mode}: only ['low','med','high'] are supported."
+                )
+            
+        return x 
+    
+
+# 3. QuantRegNetBottleneck -> regnetx-600mf
+
+# 4. QuantInvertedResidual -> mobilenetv2
+
+# 5. vit , deit 
 quant_modules = {
     BasicBlock: QuantBasicBlock,
     Bottleneck: QuantBottleneck

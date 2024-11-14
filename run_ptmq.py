@@ -159,7 +159,7 @@ def main(config_path):
     print("Completed block reconstruction")
     print(f"PTMQ block reconstruction took {tok - tik:.2f} seconds")
     
-    w_qmodes = ["low", "mid", "high"]
+    w_qmodes = ["low", "med", "high"]
     a_qbit = config.quant.a_qconfig_med.bit,
     w_qbits = [config.quant.w_qconfig_low, 
                config.quant.w_qconfig_med, 
