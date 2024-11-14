@@ -117,8 +117,10 @@ class QuantBottleneck(QuantizedBlock):
     Implementation of Quantized Bottleneck Block used in ResNet-50, Resnet-101, and ResNet-152.
     """
     # weight multi bit 은 차후에
-    def __init__(self, orig_module, config, qoutput=True):
+    def __init__(self, orig_module, config, qoutput=True, out_mode="calib"):
         super().__init__()
+        self.out_mode = out_mode
+
         self.qoutput = qoutput
 
         self.conv1_relu_low = QuantizedLayer(orig_module.conv1, orig_module.relu1, config, w_qconfig=config.quant.w_qconfig_low, qoutput=False)
@@ -140,13 +142,13 @@ class QuantBottleneck(QuantizedBlock):
             self.downsample_high = None
  
         else:
-            self.downsample_low = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_low, config.quant.a_qconfig, qoutput=False)
-            self.downsample_mid = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_med, config.quant.a_qconfig, qoutput=False)
-            self.downsample_high = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_high, config.quant.a_qconfig, qoutput=False)
+            self.downsample_low = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_low, config.quant.a_qconfig_med, qoutput=False)
+            self.downsample_mid = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_med, config.quant.a_qconfig_med, qoutput=False)
+            self.downsample_high = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_high, config.quant.a_qconfig_med, qoutput=False)
 
         self.activation = orig_module.relu3
         if self.qoutput:
-            self.block_post_act_fake_quantize = Quantizer(None, config.quant.a_qconfig)
+            #self.block_post_act_fake_quantize = Quantizer(None, config.quant.a_qconfig)
             # self.block_post_act_fake_quantize_low = Quantizer(None, config.quant.a_qconfig_low)
             self.block_post_act_fake_quantize_med = Quantizer(None, config.quant.a_qconfig_med)
             # self.block_post_act_fake_quantize_high = Quantizer(None, config.quant.a_qconfig_high)
