@@ -127,9 +127,9 @@ class QuantBottleneck(QuantizedBlock):
         self.conv2_relu_mid = QuantizedLayer(orig_module.conv2, orig_module.relu2, config, w_qconfig= config.quant.w_qconfig_med, qoutput=False)
         self.conv2_relu_high = QuantizedLayer(orig_module.conv2, orig_module.relu2, config, w_qconfig= config.quant.w_qconfig_high, qoutput=False)
 
-        self.conv3_low = QuantizedLayer(orig_module.conv3, None, config, w_config=config.quant.w_qconfig_low, qoutput=False)
-        self.conv3_mid = QuantizedLayer(orig_module.conv3, None, config, w_config=config.quant.w_qconfig_med, qoutput=False)
-        self.conv3_high = QuantizedLayer(orig_module.conv3, None, config, w_config = config.quant.w_qconfig_high, qoutput=False)
+        self.conv3_low = QuantizedLayer(orig_module.conv3, None, config, w_qconfig=config.quant.w_qconfig_low, qoutput=False)
+        self.conv3_mid = QuantizedLayer(orig_module.conv3, None, config, w_qconfig=config.quant.w_qconfig_med, qoutput=False)
+        self.conv3_high = QuantizedLayer(orig_module.conv3, None, config, w_qconfig = config.quant.w_qconfig_high, qoutput=False)
 
         
         if orig_module.downsample is None:
