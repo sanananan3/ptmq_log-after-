@@ -142,9 +142,9 @@ class QuantBottleneck(QuantizedBlock):
             self.downsample_high = None
  
         else:
-            self.downsample_low = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_low, config.quant.a_qconfig_med, qoutput=False)
-            self.downsample_mid = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_med, config.quant.a_qconfig_med, qoutput=False)
-            self.downsample_high = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_high, config.quant.a_qconfig_med, qoutput=False)
+            self.downsample_low = QuantizedLayer(orig_module.downsample[0], None, config, config.quant.w_qconfig_low, qoutput=False)
+            self.downsample_mid = QuantizedLayer(orig_module.downsample[0], None, config, config.quant.w_qconfig_med, qoutput=False)
+            self.downsample_high = QuantizedLayer(orig_module.downsample[0], None, config, config.quant.w_qconfig_high, qoutput=False)
 
         self.activation = orig_module.relu3
         if self.qoutput:
