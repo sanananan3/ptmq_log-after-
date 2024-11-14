@@ -36,7 +36,10 @@ class QuantBasicBlock(QuantizedBlock):
         if orig_module.downsample is None:
             self.downsample = None
         else:
-            self.downsample = QuantizedLayer(orig_module.downsample[0], None, config, w_qconfig=config.quant.w_qconfig, qoutput=False)
+            self.downsample_low = QuantizedLayer(orig_module.downsample[0], None, config, w_qconfig=config.quant.w_qconfig_low, qoutput=False)
+            self.downsample_mid= QuantizedLayer(orig_module.downsample[0], None, config, w_qconfig=config.quant.w_qconfig_mid, qoutput=False)
+            self.downsample_high= QuantizedLayer(orig_module.downsample[0], None, config, w_qconfig=config.quant.w_qconfig_high, qoutput=False)
+
         self.activation = orig_module.relu2
 
         if self.qoutput:
@@ -55,7 +58,9 @@ class QuantBasicBlock(QuantizedBlock):
             self.mixed_p = config.quant.ptmq.mixed_p
             
     def forward(self, x):
-        residual = x if self.downsample is None else self.downsample(x)
+        residual_low = x if self.downsample is None else self.downsample_low(x)
+        residual_mid = x if self.downsample is None else self.downsample_mid(x)
+        residual_high = x if self.downsample is None else self.downsample_high(x)
 
         # Conv1 -> low, mid, high bit-width로 양자화된 출력 계산 
         
@@ -68,9 +73,9 @@ class QuantBasicBlock(QuantizedBlock):
         out_mid = self.conv2_mid(out_mid)
         out_high = self.conv2_high(out_high)
 
-        out_low += residual
-        out_mid += residual
-        out_high += residual
+        out_low += residual_low
+        out_mid += residual_mid
+        out_high += residual_high
 
           # 활성화 함수 적용
         out_low = self.activation(out_low)
