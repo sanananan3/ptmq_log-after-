@@ -1,4 +1,4 @@
-# ptmq-pytorch
+# ptmq-pytorch -> ptmq_w's implementation
 
 PyTorch implementation of "PTMQ: Post-training Multi-Bit Quantization of Neural Networks (Xu et al., AAAI 2024)"
 
