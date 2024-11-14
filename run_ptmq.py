@@ -133,7 +133,7 @@ def main(config_path):
     with torch.no_grad():
         tik = time.time()
         enable_calib_without_quant(model, quantizer_type='act_fake_quant')
-        model(calib_data[:256]).cuda()
+        model(calib_data[:128]).cuda()
         enable_calib_without_quant(model, quantizer_type='weight_fake_quant')
         model(calib_data[:2]).cuda()
         tok = time.time()
@@ -159,26 +159,26 @@ def main(config_path):
     print("Completed block reconstruction")
     print(f"PTMQ block reconstruction took {tok - tik:.2f} seconds")
     
-    w_qmodes = ["low", "med", "high"]
-    a_qbit = config.quant.a_qconfig_med.bit,
-    w_qbits = [config.quant.w_qconfig_low, 
-               config.quant.w_qconfig_med, 
-               config.quant.w_qconfig_high, 
-               ]
+    # w_qmodes = ["low", "med", "high"]
+    # a_qbit = config.quant.a_qconfig_med.bit,
+    # w_qbits = [config.quant.w_qconfig_low, 
+    #            config.quant.w_qconfig_med, 
+    #            config.quant.w_qconfig_high, 
+    #            ]
     enable_quantization(model) # reconsturction 모델을 activate 하기
 
-    for w_qmode, w_qbit in zip(w_qmodes, w_qbits):
-        set_qmodel_block_wqbit(model,w_qmode)
+    # for w_qmode, w_qbit in zip(w_qmodes, w_qbits):
+    #     set_qmodel_block_wqbit(model,w_qmode)
 
-        for name, module in model.named_modules():
-            if isinstance(module, QuantizedBlock):
-                print(name, module.out_mode)
+    #     for name, module in model.named_modules():
+    #         if isinstance(module, QuantizedBlock):
+    #             print(name, module.out_mode)
 
-        print(f"Starting model evaluation of W{w_qbit}A{a_qbit} block reconsutciotn ({w_qmode}....)")
-        acc1, acc5 = eval_utils.validate_model(val_loader, model)
+    #     print(f"Starting model evaluation of W{w_qbit}A{a_qbit} block reconsutciotn ({w_qmode}....)")
+    #     acc1, acc5 = eval_utils.validate_model(val_loader, model)
 
-        print(f"Top-1 accuracy: {acc1:.2f}, Top-5 accuracy: {acc5:.2f}")
-    # validate_model(val_loader, model) # validation 데이터 셋 이용해서 성능 평가하기 
+    #     print(f"Top-1 accuracy: {acc1:.2f}, Top-5 accuracy: {acc5:.2f}")
+    validate_model(val_loader, model) # validation 데이터 셋 이용해서 성능 평가하기 
 
     
     
