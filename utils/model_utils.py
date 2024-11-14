@@ -135,10 +135,15 @@ class QuantBottleneck(QuantizedBlock):
 
         
         if orig_module.downsample is None:
-            self.downsample = None
-            
+            self.downsample_low = None
+            self.downsample_mid = None
+            self.downsample_high = None
+ 
         else:
-            self.downsample = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig, config.quant.a_qconfig, qoutput=False)
+            self.downsample_low = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_low, config.quant.a_qconfig, qoutput=False)
+            self.downsample_mid = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_med, config.quant.a_qconfig, qoutput=False)
+            self.downsample_high = QuantizedLayer(orig_module.downsample[0], None, config.quant.w_qconfig_high, config.quant.a_qconfig, qoutput=False)
+
         self.activation = orig_module.relu3
         if self.qoutput:
             self.block_post_act_fake_quantize = Quantizer(None, config.quant.a_qconfig)
@@ -159,7 +164,11 @@ class QuantBottleneck(QuantizedBlock):
 
 
     def forward(self, x):
-        residual = x if self.downsample is None else self.downsample(x)
+        residual_low = x if self.downsample_low is None else self.downsample_low(x)
+        residual_mid = x if self.downsample_mid is None else self.downsample_mid(x)
+        residual_high = x if self.downsample_high is None else self.downsample_high(x)
+
+
         out_low = self.conv1_relu_low(x)
         out_mid = self.conv1_relu_mid(x)
         out_high = self.conv1_relu_high(x)
@@ -173,9 +182,9 @@ class QuantBottleneck(QuantizedBlock):
         out_high = self.conv3_high(out_high)
 
 
-        out_low += residual
-        out_mid += residual
-        out_high += residual 
+        out_low += residual_low
+        out_mid += residual_mid
+        out_high += residual_high
 
         out_low = self.activation(out_low)
         out_mid = self.activation(out_mid)
