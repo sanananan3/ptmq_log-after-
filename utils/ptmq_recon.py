@@ -6,12 +6,48 @@ from tqdm import tqdm
 import wandb
 
 from utils.eval_utils import DataSaverHook, StopForwardException, parse_config, validate_model
-from quant.quant_module import QuantizedModule, QuantizedBlock
+from quant.quant_module import QuantizedModule, QuantizedBlock, QuantizedLayer
 from quant.fake_quant import LSQFakeQuantize, LSQPlusFakeQuantize, QuantizeBase
 logger = logging.getLogger('ptmq')
 
 CONFIG_PATH = '/content/ptmq_log_after/config/gpu_config.yaml'
 cfg = parse_config(CONFIG_PATH)
+
+def collect_scale_factors(q_module):
+    """
+    Collect scale factors from QuantizedLayer modules for low, mid, and high bit-widths.
+    """
+    scale_factors = {"low": {}, "mid": {}, "high": {}}
+    
+    for name, q_layer in q_module.named_modules():
+        # Check if this is a QuantizedLayer
+        if isinstance(q_layer, QuantizedLayer) and hasattr(q_layer.module, "weight_fake_quant"):
+            weight_fake_quant = q_layer.module.weight_fake_quant
+            # Extract and store scale factor for each bit-width
+            if "low" in name:
+                scale_factors["low"][name] = weight_fake_quant.scale.cpu().detach().numpy()
+            elif "mid" in name:
+                scale_factors["mid"][name] = weight_fake_quant.scale.cpu().detach().numpy()
+            elif "high" in name:
+                scale_factors["high"][name] = weight_fake_quant.scale.cpu().detach().numpy()
+    print("scale_factors" , scale_factors)
+    return scale_factors
+
+def save_scale_factors(scale_factors, i, filename ="resnet18_scale_factors.txt"):
+    """
+        Save scale factors to a text file 
+    """
+    with open (filename, "a") as f:
+        f.write(f"Reconsturction step : {i}\n")
+
+        for bit_type, layers in scale_factors.items():
+            f.write(f"Scale factors for {bit_type} bit quant:\n")
+            for layer_name, scale in layers.items():
+                f.write(f"   Layer {layer_name} : {scale.tolist()}\n")
+
+            f.write("\n")
+
+    print(f"Scale factors saved to {filename}")
 
 def save_inp_oup_data(model, module, calib_data: list, store_inp=False, store_oup=False,
                       bs: int = 32, keep_gpu: bool = True):
@@ -258,11 +294,13 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
         use_gd_loss=use_gd_loss,
         qconfig=qconfig,
     )
-
-    print(q_module)
+    
+  
 
     for i in tqdm(range(qconfig.recon.iters), desc=f"Reconstruction with GD Loss: {use_gd_loss}..."):
         # Get random index for batch
+
+        
         batch_idx = torch.randint(0, q_block_inputs.size(0), (qconfig.recon.batch_size,))
         
         # print(f"fp_block_outputs.shape: {fp_block_outputs.shape}")
@@ -311,6 +349,12 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
         if a_opt:
             a_opt.step()
             a_scheduler.step()
+
+        # scale factor 추적용 
+
+        scale_factors = collect_scale_factors(q_module)
+
+        save_scale_factors(scale_factors, i)
         
     torch.cuda.empty_cache()
     # a_para_idx = 0
