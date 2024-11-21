@@ -165,7 +165,6 @@ def main(config_path):
                config.quant.w_qconfig_med, 
                config.quant.w_qconfig_high, 
                ]
-    
     enable_quantization(model) # reconsturction 모델을 activate 하기
 
     for w_qmode, w_qbit in zip(w_qmodes, w_qbits):
@@ -179,8 +178,6 @@ def main(config_path):
         acc1, acc5 = eval_utils.validate_model(val_loader, model)
 
         print(f"Top-1 accuracy: {acc1:.2f}, Top-5 accuracy: {acc5:.2f}")
-
-        
     # validate_model(val_loader, model) # validation 데이터 셋 이용해서 성능 평가하기 
 
     
