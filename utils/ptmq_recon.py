@@ -9,9 +9,23 @@ from utils.eval_utils import DataSaverHook, StopForwardException, parse_config, 
 from quant.quant_module import QuantizedModule, QuantizedBlock, QuantizedLayer
 from quant.fake_quant import LSQFakeQuantize, LSQPlusFakeQuantize, QuantizeBase
 logger = logging.getLogger('ptmq')
-
+from run_ptmq import enable_quantization, set_qmodel_block_wqbit
 CONFIG_PATH = '/content/ptmq_log_after/config/gpu_config.yaml'
 cfg = parse_config(CONFIG_PATH)
+
+
+wandb.init(
+    # set the wandb project where this run will be logged
+    project="ptmq-w's accuracy by 100 plot",
+    # track hyperparameters and run metadata
+    config={
+        "architecture": "ResNet-18",
+        "dataset": "Imagenet",
+        "recon_iters": cfg.quant.recon.iters,
+    }
+)
+
+
 
 def collect_scale_factors(q_module):
     """
@@ -242,7 +256,7 @@ class LossFunction:
         return total_loss
 
 
-def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data, qconfig):
+def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data, qconfig, val_loader):
     device = next(q_module.parameters()).device
 
     # Get data first (save input/output for each batch of calibration data through the blocks)
@@ -294,13 +308,22 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
         use_gd_loss=use_gd_loss,
         qconfig=qconfig,
     )
+
+# 100 단위 accuracy 측정 위해서 
+
+    w_qmodes = ["low", "med", "high"]
+    w_qbits = [qconfig.w_qconfig_low, qconfig.w_qconfig_med, qconfig.w_qconfig_high]
+    a_qbit = qconfig.a_qconfig_med.bit  # Activation bit width (fixed)
     
-  
+    
+    block = 0 
 
     for i in tqdm(range(qconfig.recon.iters), desc=f"Reconstruction with GD Loss: {use_gd_loss}..."):
         # Get random index for batch
 
-        
+        if i==0:
+            block+=1
+
         batch_idx = torch.randint(0, q_block_inputs.size(0), (qconfig.recon.batch_size,))
         
         # print(f"fp_block_outputs.shape: {fp_block_outputs.shape}")
@@ -354,8 +377,22 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
 
         scale_factors = collect_scale_factors(q_module)
 
-        save_scale_factors(scale_factors, i)
-        
+     
+        # Log to wandb every 100 iterations
+
+        if (i+1) % 100 == 0:
+            enable_quantization(q_model)
+            for w_qmode, w_qbit in zip(w_qmodes, w_qbits):
+                set_qmodel_block_wqbit(q_model, w_qmode)
+                acc1, acc5 = validate_model(val_loader, q_model)
+
+                wandb.log({
+                    f"{w_qmode}_Top-1 Accuracy": acc1,
+                    f"{w_qmode}_Top-5 Accuracy": acc5,
+                    "iteration": i + 1,
+                })
+
+
     torch.cuda.empty_cache()
     # a_para_idx = 0
     # UPDATE WITH OPTIMIZED PARAMS

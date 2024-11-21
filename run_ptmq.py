@@ -150,7 +150,7 @@ def main(config_path):
             for name, child_module in module.named_children():
                 if isinstance(child_module, (QuantizedLayer, QuantizedBlock)):
                     logger.info(f"Reconstructing module {str(child_module)}")
-                    ptmq_reconstruction(model, fp_model, child_module, name, getattr(fp_module, name), calib_data, config.quant)
+                    ptmq_reconstruction(model, fp_model, child_module, name, getattr(fp_module, name), calib_data, config.quant, val_loader)
                 else:
                     recon_model(child_module, getattr(fp_module, name))
         
