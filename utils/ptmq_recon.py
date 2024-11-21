@@ -44,7 +44,7 @@ def collect_scale_factors(q_module):
                 scale_factors["mid"][name] = weight_fake_quant.scale.cpu().detach().numpy()
             elif "high" in name:
                 scale_factors["high"][name] = weight_fake_quant.scale.cpu().detach().numpy()
-    print("scale_factors" , scale_factors)
+    # print("scale_factors" , scale_factors)
     return scale_factors
 
 def save_scale_factors(scale_factors, i, filename ="resnet18_scale_factors.txt"):
@@ -61,7 +61,7 @@ def save_scale_factors(scale_factors, i, filename ="resnet18_scale_factors.txt")
 
             f.write("\n")
 
-    print(f"Scale factors saved to {filename}")
+    # print(f"Scale factors saved to {filename}")
 
 def save_inp_oup_data(model, module, calib_data: list, store_inp=False, store_oup=False,
                       bs: int = 32, keep_gpu: bool = True):
@@ -375,7 +375,7 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
 
         # scale factor 추적용 
 
-        scale_factors = collect_scale_factors(q_module)
+       #  scale_factors = collect_scale_factors(q_module)
 
      
         # Log to wandb every 100 iterations
