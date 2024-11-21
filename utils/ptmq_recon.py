@@ -223,7 +223,7 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
     for name, q_layer in q_module.named_modules():
         # collect layer weight quantization params
         if isinstance(q_layer, (nn.Linear, nn.Conv2d)):
-            # print(f"w_para from: {name}")
+            print(f"w_para from: {name}")
             weight_quantizer = q_layer.weight_fake_quant
             weight_quantizer.init(q_layer.weight.data, qconfig.recon.round_mode)
             w_para += [weight_quantizer.alpha]

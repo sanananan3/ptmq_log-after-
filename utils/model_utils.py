@@ -5,8 +5,8 @@ import gc
 
 from models.resnet import BasicBlock, Bottleneck, resnet18, resnet50
 from quant.quant_module import QuantizedLayer, QuantizedBlock, Quantizer
-from models.mobilenetv2 import InvertedResidual, mobilenet_v2 
-from models.regnet import Bottleneck as RegNetBottleneck
+from models.mobilenetv2 import InvertedResidual, mobilenetv2 
+#from models.regnet import Bottleneck as RegNetBottleneck
 # 1. QuantBasicBlock -> resnet18 
 
 class QuantBasicBlock(QuantizedBlock): 
@@ -224,95 +224,95 @@ class QuantBottleneck(QuantizedBlock):
 # 3. QuantRegNetBottleneck -> regnetx-600mf /// 일단 regnet 보류 ... 
 
 
-class QuantRegNetBottleneck(QuantizedBlock):
-    """
-    Implementation of Quantized Bottleneck Block used in RegNet (X, Y) models.
-    """
+# class QuantRegNetBottleneck(QuantizedBlock):
+#     """
+#     Implementation of Quantized Bottleneck Block used in RegNet (X, Y) models.
+#     """
 
-    def __init__(
-        self, orig_module: RegNetBottleneck, config, qoutput=True, out_mode="calib"
-    ):
-        super().__init__()
-        self.out_mode = out_mode
-        self.qoutput = qoutput
+#     def __init__(
+#         self, orig_module: RegNetBottleneck, config, qoutput=True, out_mode="calib"
+#     ):
+#         super().__init__()
+#         self.out_mode = out_mode
+#         self.qoutput = qoutput
 
-        # Copy over attributes from the original module
-        self.conv1 = orig_module.conv1
-        self.conv1.conv = QuantizedLayer(self.conv1.conv, orig_module.act3, config)
-        self.conv2 = orig_module.conv2
-        self.conv2.conv = QuantizedLayer(self.conv2.conv, orig_module.act3, config)
-        self.conv3 = orig_module.conv3
-        self.conv3.conv = QuantizedLayer(self.conv3.conv, None, config, qoutput=False)
-        self.se = orig_module.se
-        self.downsample = orig_module.downsample
-        self.drop_path = orig_module.drop_path
-        self.act3 = orig_module.act3
+#         # Copy over attributes from the original module
+#         self.conv1 = orig_module.conv1
+#         self.conv1.conv = QuantizedLayer(self.conv1.conv, orig_module.act3, config)
+#         self.conv2 = orig_module.conv2
+#         self.conv2.conv = QuantizedLayer(self.conv2.conv, orig_module.act3, config)
+#         self.conv3 = orig_module.conv3
+#         self.conv3.conv = QuantizedLayer(self.conv3.conv, None, config, qoutput=False)
+#         self.se = orig_module.se
+#         self.downsample = orig_module.downsample
+#         self.drop_path = orig_module.drop_path
+#         self.act3 = orig_module.act3
 
-        # Handle downsample layer
-        if self.downsample is not None:
-            if hasattr(self.downsample, "conv"):
-                self.downsample.conv = QuantizedLayer(
-                    self.downsample.conv, None, config, qoutput=False
-                )
+#         # Handle downsample layer
+#         if self.downsample is not None:
+#             if hasattr(self.downsample, "conv"):
+#                 self.downsample.conv = QuantizedLayer(
+#                     self.downsample.conv, None, config, qoutput=False
+#                 )
 
-        # The rest of your quantization code remains the same
-        if self.qoutput:
-            self.block_post_act_fake_quantize_low = Quantizer(
-                None, config.quant.a_qconfig_low
-            )
-            self.block_post_act_fake_quantize_med = Quantizer(
-                None, config.quant.a_qconfig_med
-            )
-            self.block_post_act_fake_quantize_high = Quantizer(
-                None, config.quant.a_qconfig_high
-            )
+#         # The rest of your quantization code remains the same
+#         if self.qoutput:
+#             self.block_post_act_fake_quantize_low = Quantizer(
+#                 None, config.quant.a_qconfig_low
+#             )
+#             self.block_post_act_fake_quantize_med = Quantizer(
+#                 None, config.quant.a_qconfig_med
+#             )
+#             self.block_post_act_fake_quantize_high = Quantizer(
+#                 None, config.quant.a_qconfig_high
+#             )
 
-            self.f_l = None
-            self.f_m = None
-            self.f_h = None
-            self.f_lmh = None
+#             self.f_l = None
+#             self.f_m = None
+#             self.f_h = None
+#             self.f_lmh = None
 
-            self.lambda1 = config.quant.ptmq.lambda1
-            self.lambda2 = config.quant.ptmq.lambda2
-            self.lambda3 = config.quant.ptmq.lambda3
+#             self.lambda1 = config.quant.ptmq.lambda1
+#             self.lambda2 = config.quant.ptmq.lambda2
+#             self.lambda3 = config.quant.ptmq.lambda3
 
-            self.mixed_p = config.quant.ptmq.mixed_p
+#             self.mixed_p = config.quant.ptmq.mixed_p
 
-    def forward(self, x):
-        shortcut = x
-        x = self.conv1(x)
-        x = self.conv2(x)
-        x = self.se(x)
-        x = self.conv3(x)
-        if self.downsample is not None:
-            x = self.drop_path(x) + self.downsample(shortcut)
-        x = self.act3(x)
+#     def forward(self, x):
+#         shortcut = x
+#         x = self.conv1(x)
+#         x = self.conv2(x)
+#         x = self.se(x)
+#         x = self.conv3(x)
+#         if self.downsample is not None:
+#             x = self.drop_path(x) + self.downsample(shortcut)
+#         x = self.act3(x)
 
-        if self.qoutput:
-            if self.out_mode == "calib":
-                self.f_l = self.block_post_act_fake_quantize_low(x)
-                self.f_m = self.block_post_act_fake_quantize_med(x)
-                self.f_h = self.block_post_act_fake_quantize_high(x)
+#         if self.qoutput:
+#             if self.out_mode == "calib":
+#                 self.f_l = self.block_post_act_fake_quantize_low(x)
+#                 self.f_m = self.block_post_act_fake_quantize_med(x)
+#                 self.f_h = self.block_post_act_fake_quantize_high(x)
 
-                self.f_lmh = (
-                    self.lambda1 * self.f_l
-                    + self.lambda2 * self.f_m
-                    + self.lambda3 * self.f_h
-                )
-                f_mixed = torch.where(torch.rand_like(x) < self.mixed_p, x, self.f_lmh)
+#                 self.f_lmh = (
+#                     self.lambda1 * self.f_l
+#                     + self.lambda2 * self.f_m
+#                     + self.lambda3 * self.f_h
+#                 )
+#                 f_mixed = torch.where(torch.rand_like(x) < self.mixed_p, x, self.f_lmh)
 
-                x = f_mixed
-            elif self.out_mode == "low":
-                x = self.block_post_act_fake_quantize_low(x)
-            elif self.out_mode == "med":
-                x = self.block_post_act_fake_quantize_med(x)
-            elif self.out_mode == "high":
-                x = self.block_post_act_fake_quantize_high(x)
-            else:
-                raise ValueError(
-                    f"Invalid out_mode '{self.out_mode}': only ['low', 'med', 'high'] are supported"
-                )
-        return x
+#                 x = f_mixed
+#             elif self.out_mode == "low":
+#                 x = self.block_post_act_fake_quantize_low(x)
+#             elif self.out_mode == "med":
+#                 x = self.block_post_act_fake_quantize_med(x)
+#             elif self.out_mode == "high":
+#                 x = self.block_post_act_fake_quantize_high(x)
+#             else:
+#                 raise ValueError(
+#                     f"Invalid out_mode '{self.out_mode}': only ['low', 'med', 'high'] are supported"
+#                 )
+#         return x
 
 
 
@@ -337,12 +337,11 @@ class QuantInvertedResidual(QuantizedBlock):
                 q_layers_low.append(QuantizedLayer(module[0], module[2], config, w_qconfig=config.quant.w_qconfig_low))
                 q_layers_mid.append(QuantizedLayer(module[0], module[2], config, w_qconfig=config.quant.w_qconfig_med))
                 q_layers_high.append(QuantizedLayer(module[0], module[2], config, w_qconfig=config.quant.w_qconfig_high))
-
-
             elif isinstance(module, nn.Conv2d):
-                q_layers_low.append(QuantizedLayer(module, None, config, qoutput=False))
-                q_layers_mid.append(QuantizedLayer(module, None, config, qoutput=False))
-                q_layers_high.append(QuantizedLayer(module, None, config, qoutput=False))
+                q_layers_low.append(QuantizedLayer(module, None, config,  w_qconfig=config.quant.w_qconfig_low, qoutput=False))
+                q_layers_mid.append(QuantizedLayer(module, None, config,  w_qconfig=config.quant.w_qconfig_med, qoutput=False))
+                q_layers_high.append(QuantizedLayer(module, None, config,  w_qconfig=config.quant.w_qconfig_high, qoutput=False))
+
 
             else: 
                 q_layers_low.append(module)
@@ -363,7 +362,7 @@ class QuantInvertedResidual(QuantizedBlock):
 
                 self.f_l, self.f_m, self.f_l, self.f_lmh = None, None, None, None
                 self.lambda1, self.lambda2, self.lambda3 = config.quant.ptmq.lambda1,  config.quant.ptmq.lambda2,  config.quant.ptmq.lambda3
-            
+                self.mixed_p = config.quant.ptmq.mixed_p
     def forward(self, x):
         if self.use_res_connect:
             # x = x+self.conv(x)
@@ -404,6 +403,7 @@ class QuantInvertedResidual(QuantizedBlock):
                 )
         return x
 
+
 # 5. vit , deit
 quant_modules = {
     BasicBlock: QuantBasicBlock,
@@ -413,10 +413,24 @@ quant_modules = {
 
 
 def load_model(config):
+    # kwargs 기본값 설정
     config['kwargs'] = config.get('kwargs', dict())
+    
+    # 모델 초기화
     model = eval(config['type'])(**config['kwargs'])
-    checkpoint = torch.load(config.path, map_location='cpu')
-    model.load_state_dict(checkpoint)
+    
+    # 체크포인트 로드
+    checkpoint = torch.load(config['path'], map_location='cpu')
+    
+    # state_dict 추출
+    if 'state_dict' in checkpoint:
+        state_dict = checkpoint['state_dict']  # 필요한 state_dict만 추출
+    else:
+        state_dict = checkpoint  # state_dict가 없으면 checkpoint 자체 사용
+    
+    # state_dict를 모델에 로드
+    model.load_state_dict(state_dict, strict=False)  # strict=False로 일부 누락된 키 무시 가능
+    
     return model
 
 

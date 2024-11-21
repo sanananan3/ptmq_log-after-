@@ -26,6 +26,48 @@ logger = logging.getLogger('ptmq')
 CONFIG_PATH = '/content/ptmq_log_after/config/gpu_config.yaml'
 cfg = parse_config(CONFIG_PATH)
 
+def collect_scale_factors(quant_block):
+
+    """
+        Collect scale facotrs from a QuantBasicBlock for low, middle, and high bit quantized layers.
+    """
+
+    scale_factors={"low":{}, "mid":{}, "high":{}}
+
+    for layer_name, q_layer in [
+        ("conv1_relu_low", quant_block.conv1_relu_low),
+        ("conv1_relu_mid", quant_block.conv1_relu_mid),
+        ("conv1_relu_high", quant_block.conv1_relu_high),
+        ("conv2_low", quant_block.conv2_low),
+        ("conv2_mid", quant_block.conv2_mid),
+        ("conv2_high", quant_block.conv2_high),
+    ]:
+        
+        if hasattr(q_layer, "weight_fake_quant") and hasattr(q_layer.weight_fake_quant, "scale"):
+            scale_factors["low"][layer_name] = q_layer.weight_fake_quant.scale.cpu().detach().numpy()
+            scale_factors["mid"][layer_name] = q_layer.weight_fake_quant.scale.cpu().detach().numpy()
+            scale_factors["high"][layer_name] = q_layer.weight_fake_quant.scale.cpu().detach().numpy()
+
+    return scale_factors
+
+def save_scale_factors(scale_factors, w_bits, a_bit, filename_template ="resnet18_W{}_A{}_scale_factors.txt"):
+    """
+        Save scale factors to a text file 
+    """
+    filename = filename_template.format(",".join(map(str, w_bits)),a_bit)
+    print(filename, "'s scale facor")
+    print(scale_factors)
+    with open (filename, "w") as f:
+        for bit_type, layers in scale_factors.items():
+            f.write(f"Scale factors for {bit_type} bit quant:\n")
+            for layer_name, scale in layers.items():
+                f.write(f"   Layer {layer_name} : {scale.tolist()}\n")
+
+            f.write("\n")
+
+    print(f"Scale factors saved to {filename}")
+
+
 def quantize_model(model, config):
     def replace_module(module, config, qoutput=True):
         children = list(iter(module.named_children()))
@@ -170,10 +212,14 @@ def main(config_path):
     for w_qmode, w_qbit in zip(w_qmodes, w_qbits):
         set_qmodel_block_wqbit(model,w_qmode)
 
+        scale_factors = collect_scale_factors(model)
+
+        save_scale_factors(scale_factors, w_qbit, a_qbit)
+
         for name, module in model.named_modules():
             if isinstance(module, QuantizedBlock):
                 print(name, module.out_mode)
-
+        
         print(f"Starting model evaluation of W{w_qbit}A{a_qbit} block reconsutciotn ({w_qmode}....)")
         acc1, acc5 = eval_utils.validate_model(val_loader, model)
 
