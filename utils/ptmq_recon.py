@@ -8,22 +8,23 @@ import wandb
 from utils.eval_utils import DataSaverHook, StopForwardException, parse_config, validate_model
 from quant.quant_module import QuantizedModule, QuantizedBlock, QuantizedLayer
 from quant.fake_quant import LSQFakeQuantize, LSQPlusFakeQuantize, QuantizeBase
+from utils.model_utils import set_qmodel_block_wqbit
+from quant.quant_state import enable_quantization
 logger = logging.getLogger('ptmq')
-from run_ptmq import enable_quantization, set_qmodel_block_wqbit
 CONFIG_PATH = '/content/ptmq_log_after/config/gpu_config.yaml'
 cfg = parse_config(CONFIG_PATH)
 
 
-wandb.init(
-    # set the wandb project where this run will be logged
-    project="ptmq-w's accuracy by 100 plot",
-    # track hyperparameters and run metadata
-    config={
-        "architecture": "ResNet-18",
-        "dataset": "Imagenet",
-        "recon_iters": cfg.quant.recon.iters,
-    }
-)
+# wandb.init(
+#     # set the wandb project where this run will be logged
+#     project="ptmq-w's accuracy by 100 plot",
+#     # track hyperparameters and run metadata
+#     config={
+#         "architecture": "ResNet-18",
+#         "dataset": "Imagenet",
+#         "recon_iters": cfg.quant.recon.iters,
+#     }
+# )
 
 
 
@@ -380,17 +381,17 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
      
         # Log to wandb every 100 iterations
 
-        if (i+1) % 100 == 0:
-            enable_quantization(q_model)
-            for w_qmode, w_qbit in zip(w_qmodes, w_qbits):
-                set_qmodel_block_wqbit(q_model, w_qmode)
-                acc1, acc5 = validate_model(val_loader, q_model)
+        # if (i+1) % 100 == 0:
+        #     enable_quantization(q_model)
+        #     for w_qmode, w_qbit in zip(w_qmodes, w_qbits):
+        #         set_qmodel_block_wqbit(q_model, w_qmode)
+        #         acc1, acc5 = validate_model(val_loader, q_model)
 
-                wandb.log({
-                    f"{w_qmode}_Top-1 Accuracy": acc1,
-                    f"{w_qmode}_Top-5 Accuracy": acc5,
-                    "iteration": i + 1,
-                })
+        #         wandb.log({
+        #             f"{w_qmode}_Top-1 Accuracy": acc1,
+        #             f"{w_qmode}_Top-5 Accuracy": acc5,
+        #             "iteration": i + 1,
+        #         })
 
 
     torch.cuda.empty_cache()
@@ -400,5 +401,4 @@ def ptmq_reconstruction(q_model, fp_model, q_module, name, fp_module, calib_data
         if isinstance(layer, (nn.Linear, nn.Conv2d)):
             weight_quantizer = layer.weight_fake_quant
             layer.weight.data = weight_quantizer.get_hard_value(layer.weight.data)
-            weight_quantizer.adaround = False
-     
+            weight_quantizer.adaround = False     

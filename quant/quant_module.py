@@ -171,7 +171,7 @@ class QuantizedLayer(QuantizedModule):
         self.module = Quantizer(module, config, w_qconfig=w_qconfig)
         self.activation = activation
         if qoutput:
-            self.layer_post_act_fake_quantize = Quantizer(None, config.quant.a_qconfig_low)
+            self.layer_post_act_fake_quantize = Quantizer(None, config.quant.a_qconfig_med)
 
     def forward(self, x):
 
